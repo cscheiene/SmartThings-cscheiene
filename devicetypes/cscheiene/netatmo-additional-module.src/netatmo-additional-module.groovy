@@ -16,14 +16,15 @@
  *
  */
 metadata {
-	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "Brian Steere,cscheiene") {
+	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "Brian Steere,cscheiene", vid: "generic-humidity") {
         capability "Sensor"
         capability "Battery"
 		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
         capability "Carbon Dioxide Measurement"
         capability "Refresh"
-        capability "Thermostat" 
+        capability "Thermostat"
+        capability "Health Check"
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"
@@ -129,4 +130,12 @@ def poll() {
 def refresh() {
     log.debug "Refreshing"
 	parent.poll()
+}
+
+def installed() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
+}
+
+def updated() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
 }
