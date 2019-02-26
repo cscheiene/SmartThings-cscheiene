@@ -1,5 +1,5 @@
 /**
- *  netatmo-windmodule Date: 05.08.2017
+ *  netatmo-windmodule Date: 01.02.2019
  *
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -21,6 +21,7 @@ metadata {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
+        capability "Health Check"
         
         attribute "WindStrength", "number"
         attribute "WindAngle", "number"
@@ -109,4 +110,12 @@ def poll() {
 def refresh() {
     log.debug "Refreshing"
 	parent.poll()
+}
+
+def installed() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
+}
+
+def updated() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
 }

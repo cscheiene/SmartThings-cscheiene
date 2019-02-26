@@ -1,5 +1,5 @@
 /**
- *  netatmo-outdoor Date: 14.10.2017
+ *  netatmo-outdoor Date: 01.02.2019
  *
  *  Copyright 2014 Brian Steere
  *
@@ -18,14 +18,14 @@
  * 
  */
 metadata {
-	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "Brian Steere,cscheiene", vid: "generic-humidity") {
+	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
 		capability "Temperature Measurement"
         capability "Relative Humidity Measurement"		
         capability "Sensor"
         capability "Battery"
         capability "Refresh"
-        capability "Thermostat"
         capability "Health Check"
+        //capability "Thermostat"
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"   
@@ -45,7 +45,7 @@ metadata {
 	tiles (scale: 2) {
 		multiAttributeTile(name:"main", type:"generic", width:6, height:4) {
 			tileAttribute("temperature", key: "PRIMARY_CONTROL") {
-            	attributeState "temperature",label:'${currentValue}°', icon:"st.Weather.weather2", backgroundColors:[
+            	attributeState "temperature", label:'${currentValue}°', icon:"st.Weather.weather2", backgroundColors:[
                 	[value: 32, color: "#153591"],
                     [value: 44, color: "#1e9cbb"],
                     [value: 59, color: "#90d2a7"],

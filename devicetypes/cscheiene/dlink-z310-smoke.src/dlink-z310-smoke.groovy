@@ -18,7 +18,7 @@
  */
  
 metadata {
-    definition (name: "Dlink z310 Smoke", namespace: "cscheiene", author: "SmartThings,cscheiene") {
+    definition (name: "Dlink z310 Smoke", namespace: "cscheiene", author: "SmartThings,cscheiene", mnmn: "SmartThings", vid: "generic-smoke-co", ocfDeviceType: "x.com.st.d.sensor.smoke") {
         capability "Battery" //attributes: battery
         capability "Sensor"
         capability "Smoke Detector" //attributes: smoke ("detected","clear","tested")

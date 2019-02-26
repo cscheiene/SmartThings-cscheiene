@@ -1,5 +1,5 @@
 /**
- *  netatmo additional module  Date: 14.10.2017
+ *  netatmo additional module  Date: 01.02.2019
  *
  *  Copyright 2014 Brian Steere
  *
@@ -16,15 +16,15 @@
  *
  */
 metadata {
-	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "Brian Steere,cscheiene", vid: "generic-humidity") {
+	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
         capability "Sensor"
         capability "Battery"
 		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
         capability "Carbon Dioxide Measurement"
         capability "Refresh"
-        capability "Thermostat"
         capability "Health Check"
+        //capability "Thermostat"        
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"

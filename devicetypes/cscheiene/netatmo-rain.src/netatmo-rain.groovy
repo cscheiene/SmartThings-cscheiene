@@ -1,5 +1,5 @@
 /**
- *  netatmo-rain module Date: 05.08.2017
+ *  netatmo-rain module Date: 01.02.2019
  *
  *  Copyright 2014 Brian Steere
  *
@@ -20,6 +20,7 @@ metadata {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
+        capability "Health Check"
         
         attribute "rain", "number"
         attribute "rainSumHour", "number"
@@ -93,4 +94,12 @@ def poll() {
 def refresh() {
     log.debug "Refreshing"
 	parent.poll()
+}
+
+def installed() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
+}
+
+def updated() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
 }

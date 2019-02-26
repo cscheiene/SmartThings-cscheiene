@@ -1,5 +1,5 @@
 /**
- *  netatmo-basestation Date: 14.10.2017
+ *  netatmo-basestation Date: 01.02.2019
  *
  *  Copyright 2014 Brian Steere
  *
@@ -17,15 +17,17 @@
  
  
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "Brian Steere,cscheiene") {
-		capability "Relative Humidity Measurement"
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
 		capability "Temperature Measurement"
+        capability "Relative Humidity Measurement"
         capability "Sensor"
         capability "Carbon Dioxide Measurement"
         capability "Sound Pressure Level"
         capability "Sound Sensor"
         capability "Refresh"
-        capability "Thermostat"
+        capability "Health Check"
+        capability "Battery" //workaround for the new ST app
+        //capability "Thermostat"
 
 		attribute "pressure", "number"
         attribute "min_temp", "number"
@@ -140,4 +142,14 @@ def poll() {
 def refresh() {
     log.debug "Refreshing"
 	parent.poll()
+}
+
+def installed() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
+    sendEvent(name: 'battery', value: 100, unit: "%") //workaround for the new ST app
+}
+
+def updated() {
+	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
+    sendEvent(name: 'battery', value: 100, unit: "%") //workaround for the new ST app
 }
