@@ -1,7 +1,7 @@
 /**
- *  netatmo-basestation Date: 01.02.2019
+ *  Netatmo Basestation
  *
- *  Copyright 2014 Brian Steere
+ *  Copyright 2019 cscheiene
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -11,23 +11,16 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
- *
- * Based on Brian Steere's netatmo-basestation DTH
  */
- 
- 
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", cstHandler: true) {
+		capability "Carbon Dioxide Measurement"
+		capability "Relative Humidity Measurement"
+		capability "Sound Pressure Level"
+		capability "Sound Sensor"
 		capability "Temperature Measurement"
-        capability "Relative Humidity Measurement"
-        capability "Sensor"
-        capability "Carbon Dioxide Measurement"
-        capability "Sound Pressure Level"
-        capability "Sound Sensor"
         capability "Refresh"
         capability "Health Check"
-        capability "Battery" //workaround for the new ST app
-        //capability "Thermostat"
 
 		attribute "pressure", "number"
         attribute "min_temp", "number"
@@ -135,7 +128,7 @@ def parse(String description) {
 }
 
 def poll() {
-	log.debug "Polling"
+	log.debug "Polling" 
     parent.poll()
 }
 
@@ -152,4 +145,4 @@ def installed() {
 def updated() {
 	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
     sendEvent(name: 'battery', value: 100, unit: "%") //workaround for the new ST app
-}
+}        
