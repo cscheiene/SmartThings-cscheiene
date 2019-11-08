@@ -1,7 +1,7 @@
 /**
- *  netatmo additional module  Date: 01.02.2019
+ *  Netatmo Additional Module
  *
- *  Copyright 2014 Brian Steere
+ *  Copyright 2019 cscheiene
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -11,13 +11,10 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
- *
- *  Based on Brian Steere's netatmo-basestation DTH
- *
  */
 metadata {
-	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
-        capability "Sensor"
+	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "cscheiene", cstHandler: true) {
+ 		capability "Sensor"
         capability "Battery"
 		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
@@ -60,7 +57,7 @@ metadata {
 			}           
 		} 
  		valueTile("carbonDioxide", "device.carbonDioxide", width: 2, height: 2, inactiveLabel: false) {
- 			state "carbonDioxide", label:'${currentValue}ppm', unit:"CO2", backgroundColors: [
+ 			state "carbonDioxide", label:'${currentValue}ppm', unit:"ppm", backgroundColors: [
  				[value: 600, color: "#44B621"],
                 [value: 999, color: "#ffcc00"],
                 [value: 1000, color: "#e86d13"]
