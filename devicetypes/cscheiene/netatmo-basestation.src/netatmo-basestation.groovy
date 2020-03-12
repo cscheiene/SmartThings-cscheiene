@@ -13,12 +13,13 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", cstHandler: true) {
-		capability "Carbon Dioxide Measurement"
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", cstHandler: true, ocfDeviceType: "oic.d.thermostat") {
+		capability "Temperature Measurement"
+        capability "Sensor"
+        capability "Carbon Dioxide Measurement"
 		capability "Relative Humidity Measurement"
 		capability "Sound Pressure Level"
-		capability "Sound Sensor"
-		capability "Temperature Measurement"
+		capability "Sound Sensor"		
         capability "Refresh"
         capability "Health Check"
 
