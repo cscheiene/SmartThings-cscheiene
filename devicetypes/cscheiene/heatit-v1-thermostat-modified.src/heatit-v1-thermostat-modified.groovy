@@ -26,7 +26,7 @@
             "enum", 
             title: "Select Temperature Sensor Mode",
            // description: "F - Floor mode: Regulation is based on the floor temperature sensor reading \nA - Room temperature mode: Regulation is based on the measured room temperature using the internal sensor (Default) \nAF - Room mode w/floor limitations: Regulation is based on internal room sensor but limited by the floor temperature sensor (included) ensuring that the floor temperature stays within the given limits (FLo/FHi) \nA2 - Room temperature mode: Regulation is based on the measured room temperature using the external sensor \nP (Power regulator): Constant heating power is supplied to the floor. Power rating is selectable in 10% increments ( 0% - 100%) \nFP - Floor mode with minimum power limitation: Regulation is based on the floor temperature sensor reading, but will always heat with a minimum power setting (PLo)",
-           	defaultValue: "A - Room temperature mode",
+           	//defaultValue: "A - Room temperature mode",
             required: true, 
             options: myOptions, 
             displayDuringSetup: false
@@ -42,7 +42,7 @@
             range: "5..40",
             title: "FLo: Floor min limit",
             description: "Minimum Limit for floor sensor (5°-40°)",
-			defaultValue: 5,
+			//defaultValue: 5,
 			required: false,
             displayDuringSetup: false
             
@@ -51,7 +51,7 @@
             range: "5..40",
             title: "FHi: Floor max limit",
             description: "Maximum Limit for floor sensor  (5°-40°)",
-			defaultValue: 40,
+			//defaultValue: 40,
 			required: false,
             displayDuringSetup: false
             
@@ -60,7 +60,7 @@
             "enum", 
             title: "Select Floor Sensor Type",
             //description: "",
-            defaultValue: "10k ntc (Default)",
+            //defaultValue: "10k ntc (Default)",
             required: false, 
             options: sensOptions, 
             displayDuringSetup: false
@@ -70,7 +70,7 @@
             range: "5..40",
             title: "ALo: Air min limit",
             description: "Minimum Limit for Air sensor (5°-40°)",
-			defaultValue: 5,
+			//defaultValue: 5,
 			required: false,
             displayDuringSetup: false
             
@@ -79,7 +79,7 @@
             range: "5..40",
             title: "AHi: Air max limit",
             description: "Maximum Limit for Air sensor  (5°-40°)",
-			defaultValue: 40,
+			//defaultValue: 40,
 			required: false,
             displayDuringSetup: false
             
@@ -88,7 +88,7 @@
             range: "0..9",
             title: "PLo: FP-mode P setting",
             description: "FP-mode P setting (0 - 9)",
-			defaultValue: 0,
+			//defaultValue: 0,
 			required: false,
             displayDuringSetup: false
             
@@ -98,20 +98,15 @@
             //range: "0..100",
             title: "PSetting",
             description: "Power Regulator setting (0 - 100%)",
-			defaultValue: "20%",
+			//defaultValue: "20%",
 			required: false,
             options: pOptions,
             displayDuringSetup: false
            
 }
-/*    
-def updated() {
-	if (settings.tempSen == null) settings.tempSen = "A - Room temperature mode"
-    configure()
-}
-*/ 
+
 metadata {
-	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", ocfDeviceType: "oic.d.thermostat", vid: "SmartThings-smartthings-Z-Wave_Thermostat") {
+	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", ocfDeviceType: "oic.d.thermostat", vid: "generic-radiator-thermostat") {
 		capability "Actuator"
 		capability "Temperature Measurement"
 		//capability "Relative Humidity Measurement"
@@ -275,16 +270,23 @@ metadata {
         */
         
 		standardTile("refresh", "device.thermostatMode", inactiveLabel: false, decoration: "flat", height: 2, width: 2) {
-			state "default", action:"polling.poll", icon:"st.secondary.refresh"
+			state "default", label:'Refresh', action:"polling.poll", icon:"st.secondary.refresh"
 		}
 		standardTile("configure", "device.configure", inactiveLabel: false, decoration: "flat", height: 2, width: 2) {
-			state "configure", label:'', action:"configuration.configure", icon:"st.secondary.configure"
+			state "configure", label:'Configure', action:"configuration.configure"//, icon:"st.secondary.configure"
 		}
         
 		main "thermostatMulti"
 		details(["thermostatMulti", "mode", "heatLabel", "heatSliderControl", "refresh", "ecoLabel", "ecoheatSliderControl", "configure"])
 	}
 }
+
+def updated() {
+    configure()
+    log.debug("Updated")
+}
+
+
 def parse(String description) {
 	def results = []
     // log.debug("RAW command: $description")
@@ -726,7 +728,7 @@ def setHeatingSetpoint(degrees, delay = 30000) {
 	setHeatingSetpoint(degrees.toDouble(), delay)
 }
 
-def setHeatingSetpoint(Double degrees, Integer delay = 30000) {
+def setHeatingSetpoint(Double degrees, Integer delay = 3000) {
 	log.trace "setHeatingSetpoint($degrees, $delay)"
 	def deviceScale = state.scale ?: 1
 	def deviceScaleString = deviceScale == 2 ? "C" : "F"
@@ -832,6 +834,7 @@ def poll() {
 }
 
 def configure() {
+	log.debug("Running config")
     
     def floorMinY = 0
     def floorMinX = 0
@@ -981,19 +984,21 @@ def configure() {
         // log.debug("floor: $powerSetRound")
         }
 
-    
-	delayBetween([
+     log.debug("sending config")
+	
+    delayBetween([
+        
 		zwave.associationV1.associationSet(groupingIdentifier:1, nodeId:[zwaveHubNodeId]).format(),
         zwave.configurationV2.configurationSet(configurationValue: [0, tempModeParam], parameterNumber: 2, size: 2).format(),
       	zwave.configurationV2.configurationSet(configurationValue: [0, floorSensParam], parameterNumber: 3, size: 2).format(),
-       // zwave.configurationV2.configurationSet(configurationValue: [0, 0], parameterNumber: 3, size: 2).format(),
+       zwave.configurationV2.configurationSet(configurationValue: [0, 0], parameterNumber: 3, size: 2).format(),
        	zwave.configurationV2.configurationSet(configurationValue: [floorMinX, floorMinY], parameterNumber: 5, size: 2).format(),
         //zwave.configurationV2.configurationSet(configurationValue: [0, 50], parameterNumber: 5, size: 2).format(),
        	zwave.configurationV2.configurationSet(configurationValue: [floorMaxX, floorMaxY], parameterNumber: 6, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [AirMinX, AirMinY], parameterNumber: 7, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [AirMaxX, AirMaxY], parameterNumber: 8, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [powerLo], parameterNumber: 9, size: 1).format(),
-        zwave.configurationV2.configurationSet(configurationValue: [powerSet], parameterNumber: 12, size: 1).format(),//zwave.configurationV2.configurationSet(configurationValue: [1, 144], parameterNumber: 6, size: 2).format(),
+        zwave.configurationV2.configurationSet(configurationValue: [powerSet], parameterNumber: 12, size: 1).format(),
         //zwave.configurationV2.configurationSet(configurationValue: [1, 144], parameterNumber: 6, size: 2).format(),
         zwave.thermostatModeV2.thermostatModeSupportedGet().format(),
         poll()
