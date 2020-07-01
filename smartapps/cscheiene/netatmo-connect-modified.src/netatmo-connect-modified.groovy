@@ -478,7 +478,7 @@ def listDevices() {
 		}
 
         section("Preferences") {
-        	input "rainUnits", "enum", title: "Rain Units", description: "Please select rain units", required: true, options: [mm:'Millimeters', in:'Inches']
+        	input "rainUnits", "enum", title: "Rain Units", description: "Please select rain units", required: true, options: [MM:'Millimeters', IN:'Inches']
             input "pressUnits", "enum", title: "Pressure Units", description: "Please select pressure units", required: true, options: [mbar:'mbar', inhg:'inhg']            
             input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [KPH:'KPH', MS:'MS', MPH:'MPH', KTS:'KTS']
             input "time", "enum", title: "Time Format", description: "Please select time format", required: true, options: [12:'12 Hour', 24:'24 Hour']
@@ -524,7 +524,7 @@ def poll() {
 	log.debug "Polling"
 	getDeviceList();
 	def children = getChildDevices()
-    //log.debug "State: ${state.deviceState}"
+    log.debug "State: ${state.deviceState}"
     //log.debug "Time Zone: ${location.timeZone}"
      
 
@@ -533,7 +533,7 @@ def poll() {
 		def data = state?.deviceState[deviceId]
 		def child = children?.find { it.deviceNetworkId == deviceId }
 
-		//log.debug "Update: $child";
+		log.debug "Update: $child";
 		switch(detail?.type) {
 			case 'NAMain':
 				if(data == null) {
@@ -579,8 +579,8 @@ def poll() {
                 } else {            
 				log.debug "Updating Rain Module $data"
 				child?.sendEvent(name: 'rain', value: (rainToPref(data['Rain'])), unit: settings.rainUnits)
-				child?.sendEvent(name: 'rainSumHour', value: (rainToPref(data['sum_rain_1'])), unit: settings.rainUnits)
-				child?.sendEvent(name: 'rainSumDay', value: (rainToPref(data['sum_rain_24'])), unit: settings.rainUnits)
+				child?.sendEvent(name: 'rainhour', value: (rainToPref(data['sum_rain_1'])), unit: settings.rainUnits)
+				child?.sendEvent(name: 'rainday', value: (rainToPref(data['sum_rain_24'])), unit: settings.rainUnits)
 				child?.sendEvent(name: 'units', value: settings.rainUnits)
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']), unit: "")
@@ -642,7 +642,7 @@ def cToPref(temp) {
 }
 
 def rainToPref(rain) {
-	if(settings.rainUnits == 'mm') {
+	if(settings.rainUnits == 'MM') {
     	return rain.toDouble().trunc(1)
     } else {
     	return (rain * 0.039370).toDouble().trunc(3)
@@ -650,10 +650,10 @@ def rainToPref(rain) {
 }
 
 def rainToPrefUnits(rain) {
-	if(settings.rainUnits == 'mm') {
-    	return rain.toDouble().trunc(1) + " mm"
+	if(settings.rainUnits == 'MM') {
+    	return rain.toDouble().trunc(1) + " MM"
     } else {
-    	return (rain * 0.039370).toDouble().trunc(3) + " in"
+    	return (rain * 0.039370).toDouble().trunc(3) + " IN"
     }
 }
 
