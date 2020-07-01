@@ -480,7 +480,7 @@ def listDevices() {
         section("Preferences") {
         	input "rainUnits", "enum", title: "Rain Units", description: "Please select rain units", required: true, options: [mm:'Millimeters', in:'Inches']
             input "pressUnits", "enum", title: "Pressure Units", description: "Please select pressure units", required: true, options: [mbar:'mbar', inhg:'inhg']            
-            input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [kph:'kph', ms:'ms', mph:'mph', kts:'kts']
+            input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [KPH:'KPH', MS:'MS', MPH:'MPH', KTS:'KTS']
             input "time", "enum", title: "Time Format", description: "Please select time format", required: true, options: [12:'12 Hour', 24:'24 Hour']
             input "sound", "number", title: "Sound Sensor: \nEnter the value when sound will be marked as detected", description: "Please enter number", required: false
         }
@@ -544,6 +544,7 @@ def poll() {
 				child?.sendEvent(name: 'carbonDioxide', value: data['CO2'], unit: "ppm")
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
                 child?.sendEvent(name: 'temp_trend', value: data['temp_trend'], unit: "")                
+                child?.sendEvent(name: 'atmosphericPressure', value: (pressToPref(data['Pressure'])).toDouble().round(), unit: settings.pressUnits)
                 child?.sendEvent(name: 'pressure', value: (pressToPref(data['Pressure'])).toDouble().trunc(2), unit: settings.pressUnits)
 				child?.sendEvent(name: 'soundPressureLevel', value: data['Noise'], unit: "db")
                 child?.sendEvent(name: 'sound', value: noiseTosound(data['Noise']))
@@ -610,10 +611,12 @@ def poll() {
                 log.error "Windmodule is missing data"
                 } else {
                 log.debug "Updating Wind Module $data"
-				child?.sendEvent(name: 'WindAngle', value: data['WindAngle'], unit: "°", displayed: false)
+				child?.sendEvent(name: 'windVector', value: data['WindAngle'], unit: "°", displayed: false)
+                child?.sendEvent(name: 'WindAngle', value: data['WindAngle'], unit: "°", displayed: false)
                 child?.sendEvent(name: 'GustAngle', value: data['GustAngle'], unit: "°", displayed: false)
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
-				child?.sendEvent(name: 'WindStrength', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)
+				child?.sendEvent(name: 'wind', value: (windToPref(data['WindStrength'])).toDouble().round(), unit: settings.windUnits)
+                child?.sendEvent(name: 'WindStrength', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'GustStrength', value: (windToPref(data['GustStrength'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'max_wind_str', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'units', value: settings.windUnits)
@@ -663,26 +666,26 @@ def pressToPref(Pressure) {
 }
 
 def windToPref(Wind) {
-	if(settings.windUnits == 'kph') {
+	if(settings.windUnits == 'KPH') {
     	return Wind
-    } else if (settings.windUnits == 'ms') {
+    } else if (settings.windUnits == 'MS') {
     	return Wind * 0.277778
-    } else if (settings.windUnits == 'mph') {
+    } else if (settings.windUnits == 'MPH') {
     	return Wind * 0.621371192
-    } else if (settings.windUnits == 'kts') {
+    } else if (settings.windUnits == 'KTS') {
     	return Wind * 0.539956803
     }
 }
 
 def windToPrefUnits(Wind) {
-	if(settings.windUnits == 'kph') {
+	if(settings.windUnits == 'KPH') {
     	return Wind
-    } else if (settings.windUnits == 'ms') {
-    	return (Wind * 0.277778).toDouble().trunc(1) +" ms"
-    } else if (settings.windUnits == 'mph') {
-    	return (Wind * 0.621371192).toDouble().trunc(1) +" mph"
-    } else if (settings.windUnits == 'kts') {
-    	return (Wind * 0.539956803).toDouble().trunc(1) +" kts"
+    } else if (settings.windUnits == 'MS') {
+    	return (Wind * 0.277778).toDouble().trunc(1) +" MS"
+    } else if (settings.windUnits == 'MPH') {
+    	return (Wind * 0.621371192).toDouble().trunc(1) +" MPH"
+    } else if (settings.windUnits == 'KTS') {
+    	return (Wind * 0.539956803).toDouble().trunc(1) +" KTS"
     }
 }
 def lastUpdated(time) {
