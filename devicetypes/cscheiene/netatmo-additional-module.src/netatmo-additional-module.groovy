@@ -13,15 +13,14 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "cscheiene", cstHandler: true, ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "cscheiene", mnmn: "SmartThingsCommunity", vid: "45215666-0ceb-3df3-9f81-774db869eb34", ocfDeviceType: "oic.d.thermostat") {
  		capability "Temperature Measurement"
         capability "Sensor"
         capability "Battery"
 		capability "Relative Humidity Measurement"
         capability "Carbon Dioxide Measurement"
         capability "Refresh"
-        capability "Health Check"
-        //capability "Thermostat"        
+        capability "Health Check"      
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"

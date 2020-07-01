@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", cstHandler: true, ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", mnmn: "SmartThingsCommunity", vid: "2323b836-60ee-3640-b362-dc30f645ed81", ocfDeviceType: "oic.d.thermostat") {
 		capability "Temperature Measurement"
         capability "Sensor"
         capability "Carbon Dioxide Measurement"
@@ -22,8 +22,8 @@ metadata {
 		capability "Sound Sensor"		
         capability "Refresh"
         capability "Health Check"
+        capability 'Atmospheric Pressure Measurement'
 
-		attribute "pressure", "number"
         attribute "min_temp", "number"
         attribute "max_temp", "number"
         attribute "temp_trend", "string"
