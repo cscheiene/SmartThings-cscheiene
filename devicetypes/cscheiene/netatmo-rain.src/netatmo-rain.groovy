@@ -1,5 +1,5 @@
 /**
- *  netatmo-rain module Date: 01.02.2019
+ *  netatmo-rain module
  *
  *  Copyright 2014 Brian Steere
  *
@@ -16,15 +16,18 @@
  *
  */
 metadata {
-	definition (name: "Netatmo Rain", namespace: "cscheiene", author: "Brian Steere,cscheiene") {
+	definition (name: "Netatmo Rain", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThingsCommunity", vid: "c085746b-32a1-35f6-a825-c83c09968b69") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
         capability "Health Check"
+        capability "islandtravel33177.rain"
+        capability "islandtravel33177.rainhour"
+        capability "islandtravel33177.rainday"
         
-        attribute "rain", "number"
-        attribute "rainSumHour", "number"
-        attribute "rainSumDay", "number"
+        //attribute "rain", "number"
+        //attribute "rainSumHour", "number"
+        //attribute "rainSumDay", "number"
         attribute "units", "string"
         attribute "lastupdate", "string"
         

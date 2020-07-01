@@ -17,11 +17,14 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene") {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "13c002ff-cf63-3d0d-88e6-ba67362078ba") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
         capability "Health Check"
+        capability "Wind Speed"
+        capability "stsmartweather.windSpeed" // "Wind Speed" only supports m/s unit, however we want to create both events
+        capability "stsmartweather.windDirection"
         
         attribute "WindStrength", "number"
         attribute "WindAngle", "number"
