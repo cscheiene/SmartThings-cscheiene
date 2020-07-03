@@ -524,7 +524,7 @@ def poll() {
 	log.debug "Polling"
 	getDeviceList();
 	def children = getChildDevices()
-    log.debug "State: ${state.deviceState}"
+    //log.debug "State: ${state.deviceState}"
     //log.debug "Time Zone: ${location.timeZone}"
      
 
@@ -533,7 +533,7 @@ def poll() {
 		def data = state?.deviceState[deviceId]
 		def child = children?.find { it.deviceNetworkId == deviceId }
 
-		log.debug "Update: $child";
+		//log.debug "Update: $child";
 		switch(detail?.type) {
 			case 'NAMain':
 				if(data == null) {
@@ -583,7 +583,7 @@ def poll() {
 				child?.sendEvent(name: 'rainday', value: (rainToPref(data['sum_rain_24'])), unit: settings.rainUnits)
 				child?.sendEvent(name: 'units', value: settings.rainUnits)
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
-                child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']), unit: "")
+                child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
 				child?.sendEvent(name: 'rainUnits', value: rainToPrefUnits(data['Rain']), displayed: false)
 				child?.sendEvent(name: 'rainSumHourUnits', value: rainToPrefUnits(data['sum_rain_1']), displayed: false)
 				child?.sendEvent(name: 'rainSumDayUnits', value: rainToPrefUnits(data['sum_rain_24']), displayed: false)                
@@ -611,11 +611,11 @@ def poll() {
                 log.error "Windmodule is missing data"
                 } else {
                 log.debug "Updating Wind Module $data"
-				child?.sendEvent(name: 'windVector', value: data['WindAngle'], unit: "°", displayed: false)
+				child?.sendEvent(name: 'windVector', value: data['WindAngle'], unit: "°")
                 child?.sendEvent(name: 'WindAngle', value: data['WindAngle'], unit: "°", displayed: false)
                 child?.sendEvent(name: 'GustAngle', value: data['GustAngle'], unit: "°", displayed: false)
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
-				child?.sendEvent(name: 'wind', value: (windToPref(data['WindStrength'])).toDouble().round(), unit: settings.windUnits)
+				child?.sendEvent(name: 'wind', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'WindStrength', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'GustStrength', value: (windToPref(data['GustStrength'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'max_wind_str', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
