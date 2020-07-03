@@ -23,12 +23,13 @@ metadata {
         capability "Refresh"
         capability "Health Check"
         capability 'Atmospheric Pressure Measurement'
+        capability "islandtravel33177.lastUpdate"
 
         attribute "min_temp", "number"
         attribute "max_temp", "number"
         attribute "temp_trend", "string"
         attribute "pressure_trend", "string"
-        attribute "lastupdate", "string"
+        //attribute "lastupdate", "string"
 	}
 
 	simulator {

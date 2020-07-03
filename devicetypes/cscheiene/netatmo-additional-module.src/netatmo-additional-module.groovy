@@ -20,12 +20,13 @@ metadata {
 		capability "Relative Humidity Measurement"
         capability "Carbon Dioxide Measurement"
         capability "Refresh"
-        capability "Health Check"      
+        capability "Health Check"
+        capability "islandtravel33177.lastUpdate"
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"
         attribute "temp_trend", "string"
-        attribute "lastupdate", "string"
+        //attribute "lastupdate", "string"
 	}
 
 	simulator {

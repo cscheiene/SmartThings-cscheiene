@@ -25,6 +25,7 @@ metadata {
         capability "Wind Speed"
         capability "stsmartweather.windSpeed" // "Wind Speed" only supports m/s unit, however we want to create both events
         capability "stsmartweather.windDirection"
+        capability "islandtravel33177.lastUpdate"
         
         attribute "WindStrength", "number"
         attribute "WindAngle", "number"
@@ -32,7 +33,7 @@ metadata {
         attribute "GustAngle", "number"
         attribute "max_wind_str", "number"
         attribute "units", "string"
-        attribute "lastupdate", "string"
+        //attribute "lastupdate", "string"
         attribute "date_max_wind_str", "string"
         
         command "poll"
