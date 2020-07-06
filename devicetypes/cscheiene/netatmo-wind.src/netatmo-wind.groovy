@@ -17,7 +17,7 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "e98d7feb-e649-3b71-92dc-6800f9dcd9cd", ocfDeviceType: 'oic.wk.d') {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "ddbd3bb0-b25b-312b-a2d0-725fd79f94ef", ocfDeviceType: 'oic.wk.d') {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
