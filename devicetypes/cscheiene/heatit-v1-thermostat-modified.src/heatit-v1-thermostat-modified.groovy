@@ -25,7 +25,7 @@
 			input "tempSen", 
             "enum", 
             title: "Select Temperature Sensor Mode",
-           // description: "F - Floor mode: Regulation is based on the floor temperature sensor reading \nA - Room temperature mode: Regulation is based on the measured room temperature using the internal sensor (Default) \nAF - Room mode w/floor limitations: Regulation is based on internal room sensor but limited by the floor temperature sensor (included) ensuring that the floor temperature stays within the given limits (FLo/FHi) \nA2 - Room temperature mode: Regulation is based on the measured room temperature using the external sensor \nP (Power regulator): Constant heating power is supplied to the floor. Power rating is selectable in 10% increments ( 0% - 100%) \nFP - Floor mode with minimum power limitation: Regulation is based on the floor temperature sensor reading, but will always heat with a minimum power setting (PLo)",
+            //description: "F - Floor mode: Regulation is based on the floor temperature sensor reading \nA - Room temperature mode: Regulation is based on the measured room temperature using the internal sensor (Default) \nAF - Room mode w/floor limitations: Regulation is based on internal room sensor but limited by the floor temperature sensor (included) ensuring that the floor temperature stays within the given limits (FLo/FHi) \nA2 - Room temperature mode: Regulation is based on the measured room temperature using the external sensor \nP (Power regulator): Constant heating power is supplied to the floor. Power rating is selectable in 10% increments ( 0% - 100%) \nFP - Floor mode with minimum power limitation: Regulation is based on the floor temperature sensor reading, but will always heat with a minimum power setting (PLo)",
            	//defaultValue: "A - Room temperature mode",
             required: true, 
             options: myOptions, 
@@ -61,7 +61,7 @@
             title: "Select Floor Sensor Type",
             //description: "",
             //defaultValue: "10k ntc (Default)",
-            required: false, 
+            required: true, 
             options: sensOptions, 
             displayDuringSetup: false
             
@@ -99,14 +99,14 @@
             title: "PSetting",
             description: "Power Regulator setting (0 - 100%)",
 			//defaultValue: "20%",
-			required: false,
+			required: true,
             options: pOptions,
             displayDuringSetup: false
            
 }
 
 metadata {
-	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", ocfDeviceType: "oic.d.thermostat", vid: "generic-radiator-thermostat") {
+	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", ocfDeviceType: "oic.d.thermostat", vid: "generic-thermostat-1") {
 		capability "Actuator"
 		capability "Temperature Measurement"
 		//capability "Relative Humidity Measurement"
@@ -282,8 +282,11 @@ metadata {
 }
 
 def updated() {
+    log.trace "Updated"
+    sendEvent(name:"supportedThermostatModes",    value: ['heat', 'off'], displayed: false)
+    sendEvent(name:"supportedThermostatFanModes", values: [], displayed: false)
     configure()
-    log.debug("Updated")
+	
 }
 
 
@@ -984,7 +987,6 @@ def configure() {
         // log.debug("floor: $powerSetRound")
         }
 
-     log.debug("sending config")
 	
     delayBetween([
         
@@ -1003,7 +1005,7 @@ def configure() {
         zwave.thermostatModeV2.thermostatModeSupportedGet().format(),
         poll()
 	], 650)
-    
+
 }
 
 def modes() {
