@@ -115,6 +115,7 @@ metadata {
 		capability "Configuration"
 		capability "Polling"
 		capability "Sensor"
+        capability "islandtravel33177.heatitTemperatureSensor"
 		
 		//attribute "thermostatFanState", "string"
 
@@ -209,22 +210,6 @@ metadata {
         
 
 }
-        /*
-        valueTile("temperature", "device.temperature", width: 2, height: 2) {
-			state("temperature", label:'${currentValue}°',
-				backgroundColors:[
-					[value: 31, color: "#153591"],
-					[value: 44, color: "#1e9cbb"],
-					[value: 59, color: "#90d2a7"],
-					[value: 74, color: "#44b621"],
-					[value: 84, color: "#f1d801"],
-					[value: 95, color: "#d04e00"],
-					[value: 96, color: "#bc2323"]
-				]
-			)
-		}
-		
-        */
         
         standardTile("mode", "device.thermostatMode", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "off", label:'Off', action:"switchMode", nextState:"working"
@@ -232,40 +217,19 @@ metadata {
 			state "energySaveHeat", label: "eco heat", action:"switchMode", nextState:"working", icon:"st.Home.home1"
             state "working", label:'...'
 		}
-        /*
-		standardTile("fanMode", "device.thermostatFanMode", inactiveLabel: false, decoration: "flat") {
-			state "fanAuto", label:'${name}', action:"switchFanMode"
-			state "fanOn", label:'${name}', action:"switchFanMode"
-			state "fanCirculate", label:'${name}', action:"switchFanMode"
-		}
-        */
         valueTile("heatLabel", "device.thermostatMode", inactiveLabel: false, decoration: "flat", height: 1, width: 4) {
 			state "default", label:"Heat Set Point:" 
 		}
 		controlTile("heatSliderControl", "device.heatingSetpoint", "slider", height: 1, width: 4, inactiveLabel: false, range: "(5..40)") {
 			state "setHeatingSetpoint", action:"quickSetHeat", backgroundColor:"#d04e00"
 		}
-     //   standardTile("blank", "device.thermostatMode", inactiveLabel: false, decoration: "flat", height: 2, width: 2) {
-	//		state "default", label:"" 
-	//	}
         valueTile("ecoLabel", "device.thermostatMode", inactiveLabel: false, decoration: "flat", height: 1, width: 4) {
 			state "default", label:"Eco Mode Set Point:" 
 		}
 		controlTile("ecoheatSliderControl", "device.ecoheatingSetpoint", "slider", height: 1, width: 4, inactiveLabel: false, range: "(5..40)") {
 			state "setecoHeatingSetpoint", action:"quickSetecoHeat", backgroundColor:"#d04e00"
 		}
-        /*
-		valueTile("heatingSetpoint", "device.heatingSetpoint", inactiveLabel: false, decoration: "flat") {
-			state "heat", label:'${currentValue}° heat', backgroundColor:"#ffffff"
-		}
-        /*
-		controlTile("coolSliderControl", "device.coolingSetpoint", "slider", height: 1, width: 2, inactiveLabel: false) {
-			state "setCoolingSetpoint", action:"quickSetCool", backgroundColor: "#1e9cbb"
-		}
-		valueTile("coolingSetpoint", "device.coolingSetpoint", inactiveLabel: false, decoration: "flat") {
-			state "cool", label:'${currentValue}° cool', backgroundColor:"#ffffff"
-		}
-        */
+
         
 		standardTile("refresh", "device.thermostatMode", inactiveLabel: false, decoration: "flat", height: 2, width: 2) {
 			state "default", label:'Refresh', action:"polling.poll", icon:"st.secondary.refresh"
@@ -275,7 +239,7 @@ metadata {
 		}
         
 		main "thermostatMulti"
-		details(["thermostatMulti", "mode", "heatLabel", "heatSliderControl", "refresh", "ecoLabel", "ecoheatSliderControl", "configure"])
+		details(["thermostatMulti", "mode", "heatLabel", "heatSliderControl", "refresh", "ecoLabel", "ecoheatSliderControl"])
 	}
 }
 
@@ -396,7 +360,7 @@ def zwaveEvent(physicalgraph.zwave.commands.sensormultilevelv5.SensorMultilevelR
     if (cmd.scale == 0){
     log.debug("Scale is Celcius")
     }
-    log.debug("Air Temperature is: $cmd.scaledSensorValue °C")
+    log.debug("Temperature is: $cmd.scaledSensorValue °C")
     sendEvent(name: "temperature", value: cmd.scaledSensorValue, unit: getTemperatureScale()) 
 
     
@@ -549,27 +513,27 @@ def zwaveEvent(physicalgraph.zwave.commands.configurationv2.ConfigurationReport 
     if (cmd.parameterNumber == 2){
     	if (cmd.configurationValue == [0, 0]){
             log.debug("Temperature Sensor F - Floor mode: Regulation is based on the floor temperature sensor reading")
-        	sendEvent(name: "tempSenseMode", value: "F")
+        	sendEvent(name: "tempSenseMode", value: "F", displayed: true)
         }
         else if (cmd.configurationValue == [0, 1]){
             log.debug("Temperature Sensor A - Room temperature mode: Regulation is based on the measured room temperature using the internal sensor (Default)")
-        	sendEvent(name: "tempSenseMode", value: "A")
+        	sendEvent(name: "tempSenseMode", value: "A", displayed: true)
         }
         else if (cmd.configurationValue == [0, 2]){
             log.debug("Temperature Sensor AF - Room mode w/floor limitations: Regulation is based on internal room sensor but limited by the floor temperature sensor (included) ensuring that the floor temperature stays within the given limits (FLo/FHi")
-        	sendEvent(name: "tempSenseMode", value: "AF")
+        	sendEvent(name: "tempSenseMode", value: "AF", displayed: true)
         }
         else if (cmd.configurationValue == [0, 3]){
             log.debug("Temperature Sensor 2 - Room temperature mode: Regulation is based on the measured room temperature using the external sensor")
-        	sendEvent(name: "tempSenseMode", value: "A2")
+        	sendEvent(name: "tempSenseMode", value: "A2", displayed: true)
         }
         else if (cmd.configurationValue == [0, 4]){
             log.debug("Temperature Sensor P (Power regulator): Constant heating power is supplied to the floor. Power rating is selectable in 10% increments ( 0% - 100%)")
-        	sendEvent(name: "tempSenseMode", value: "P")
+        	sendEvent(name: "tempSenseMode", value: "P", displayed: true)
         }
          else if (cmd.configurationValue == [0, 5]){
             log.debug("Temperature Sensor FP - Floor mode with minimum power limitation: Regulation is based on the floor temperature sensor reading, but will always heat with a minimum power setting (PLo)")
-        	sendEvent(name: "tempSenseMode", value: "FP")
+        	sendEvent(name: "tempSenseMode", value: "FP", displayed: true)
         }
 	}
     if (cmd.parameterNumber == 3){
