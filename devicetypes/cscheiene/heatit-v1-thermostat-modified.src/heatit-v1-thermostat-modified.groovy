@@ -21,14 +21,13 @@
  
  preferences {
             
-            def myOptions = ["F - Floor temperature mode", "A - Room temperature mode", "AF - Room mode w/floor limitations", "A2 - Room temperature mode (external)", "P - Power regulator mode", "FP - Floor mode with minimum power limitation"]
 			input "tempSen", 
             "enum", 
             title: "Select Temperature Sensor Mode",
             //description: "F - Floor mode: Regulation is based on the floor temperature sensor reading \nA - Room temperature mode: Regulation is based on the measured room temperature using the internal sensor (Default) \nAF - Room mode w/floor limitations: Regulation is based on internal room sensor but limited by the floor temperature sensor (included) ensuring that the floor temperature stays within the given limits (FLo/FHi) \nA2 - Room temperature mode: Regulation is based on the measured room temperature using the external sensor \nP (Power regulator): Constant heating power is supplied to the floor. Power rating is selectable in 10% increments ( 0% - 100%) \nFP - Floor mode with minimum power limitation: Regulation is based on the floor temperature sensor reading, but will always heat with a minimum power setting (PLo)",
            	//defaultValue: "A - Room temperature mode",
             required: true, 
-            options: myOptions, 
+            options: [F: 'F - Floor temperature mode', A: 'A - Room temperature mode', AF: 'AF - Room mode w/floor limitations', A2: 'A2 - Room temperature mode (external)', P: 'P - Power regulator mode', FP: 'FP - Floor mode with minimum power limitation'], 
             displayDuringSetup: false
             
             input title: "Explanation:", 
@@ -55,14 +54,14 @@
 			required: false,
             displayDuringSetup: false
             
-            def sensOptions = ["10k ntc (Default)", "12k ntc", "15k ntc", "22k ntc", "33k ntc", "47k ntc"]
+
 			input "sensorType", 
             "enum", 
             title: "Select Floor Sensor Type",
             //description: "",
             //defaultValue: "10k ntc (Default)",
             required: true, 
-            options: sensOptions, 
+            options: [10: '10k ntc (Default)', 12: '12k ntc', 15: '15k ntc', 22: '22k ntc', 33: '33k ntc', 47: '47k ntc'], 
             displayDuringSetup: false
             
             input "ALo",
@@ -92,7 +91,6 @@
 			required: false,
             displayDuringSetup: false
             
-            def pOptions = ["0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"]
             input "PSet",
         	"enum",
             //range: "0..100",
@@ -100,13 +98,13 @@
             description: "Power Regulator setting (0 - 100%)",
 			//defaultValue: "20%",
 			required: true,
-            options: pOptions,
+            options: [0: '0%', 10: '10%', 20: '20%', 30: '30%', 40: '40%', 50: '50%', 60: '60%', 70: '70%', 80: '80%', 90: '90%', 100: '100%'],
             displayDuringSetup: false
            
 }
 
 metadata {
-	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", mnmm: "SmartThingsCommunity", vid: "generic-thermostat-1", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV,cscheiene", mnmm: "SmartThingsCommunity", vid: "generic-thermostat-1", ocfDeviceType: "oic.d.thermostat") {
 		capability "Actuator"
 		capability "Temperature Measurement"
         //capability "Thermostat Setpoint"
@@ -285,7 +283,7 @@ def updated() {
     log.trace "Updated"
     sendEvent(name:"supportedThermostatModes",    value: ['heat', 'off'], displayed: false)
     sendEvent(name:"supportedThermostatFanModes", values: [], displayed: false)
-    configure()
+    response(configure())
 	
 }
 
@@ -654,10 +652,39 @@ def zwaveEvent(physicalgraph.zwave.commands.configurationv2.ConfigurationReport 
        sendEvent(name: "ecoheatingSetpoint", value: diff)
 	}
     if (cmd.parameterNumber == 12){
-    	
-       def val = cmd.configurationValue[0]
-       def diff = val * 10
-       log.debug("P (Power regulator) is $diff %")
+    	if (cmd.configurationValue == [0, 0]){
+            log.debug("Power regulator is 0%")
+        }
+        else if (cmd.configurationValue == [0, 1]){
+            log.debug("Power regulator is 10%")
+        }
+        else if (cmd.configurationValue == [0, 2]){
+            log.debug("Power regulator is 20%")
+        }
+        else if (cmd.configurationValue == [0, 3]){
+            log.debug("Power regulator is 30%")
+        }
+        else if (cmd.configurationValue == [0, 4]){
+            log.debug("Power regulator is 40%")
+        }
+         else if (cmd.configurationValue == [0, 5]){
+            log.debug("Power regulator is 50%")
+        }
+          else if (cmd.configurationValue == [0, 6]){
+            log.debug("Power regulator is 60%")
+        }
+          else if (cmd.configurationValue == [0, 7]){
+            log.debug("Power regulator is 70%")
+        }
+          else if (cmd.configurationValue == [0, 8]){
+            log.debug("Power regulator is 80%")
+        }
+          else if (cmd.configurationValue == [0, 9]){
+            log.debug("Power regulator is 90%")
+        }
+          else if (cmd.configurationValue == [0, 10]){
+            log.debug("Power regulator is 100%")
+        }
 	}
 }
     
@@ -899,22 +926,22 @@ def configure() {
     def tempModeParam = 1
     if (tempSen){
     tempSensorMode = tempSen
-        if (tempSensorMode == "F - Floor temperature mode"){
+        if (tempSensorMode == "F"){
         tempModeParam = 0
         }
-        if (tempSensorMode == "A - Room temperature mode"){
+        if (tempSensorMode == "A"){
         tempModeParam = 1
         }
-        if (tempSensorMode == "AF - Room mode w/floor limitations"){
+        if (tempSensorMode == "AF"){
         tempModeParam = 2
         }
-        if (tempSensorMode == "A2 - Room temperature mode (external)"){
+        if (tempSensorMode == "A2"){
         tempModeParam = 3
         }
-       	if (tempSensorMode == "P - Power regulator mode"){
+       	if (tempSensorMode == "P"){
         tempModeParam = 4
         }
-        if (tempSensorMode == "FP - Floor mode with minimum power limitation"){
+        if (tempSensorMode == "FP"){
         tempModeParam = 5
         }
     }
@@ -922,22 +949,22 @@ def configure() {
     def floorSensParam = 0
     	if (sensorType){
         floorSensor = sensorType
-            if (floorSensor == "10k ntc (Default)"){
+            if (floorSensor == "10"){
             floorSensParam = 0
             }
-            if (floorSensor == "12k ntc"){
+            if (floorSensor == "12"){
             floorSensParam = 1
             }
-            if (floorSensor == "15k ntc"){
+            if (floorSensor == "15"){
             floorSensParam = 2
             }
-            if (floorSensor == "22k ntc"){
+            if (floorSensor == "22"){
             floorSensParam = 3
             }
-            if (floorSensor == "33k ntc"){
+            if (floorSensor == "33"){
             floorSensParam = 4
             }
-            if (floorSensor == "47k ntc"){
+            if (floorSensor == "47"){
             floorSensParam = 5
             }
         }
@@ -949,38 +976,38 @@ def configure() {
     def powerSetPer = ""
     	if (PSet){
         powerSetPer = PSet
-            if (powerSetPer == "0%"){
+            if (powerSetPer == "0"){
         	powerSet = 0
        		}
-            if (powerSetPer == "10%"){
+            if (powerSetPer == "10"){
         	powerSet = 1
        		}
-            if (powerSetPer == "20%"){
+            if (powerSetPer == "20"){
         	powerSet = 2
        		}
-            if (powerSetPer == "30%"){
+            if (powerSetPer == "30"){
         	powerSet = 3
             log.debug("powerset 3")
        		}
-            if (powerSetPer == "40%"){
+            if (powerSetPer == "40"){
         	powerSet = 4
        		}
-            if (powerSetPer == "50%"){
+            if (powerSetPer == "50"){
         	powerSet = 5
        		}
-            if (powerSetPer == "60%"){
+            if (powerSetPer == "60"){
         	powerSet = 6
        		}
-            if (powerSetPer == "70%"){
+            if (powerSetPer == "70"){
         	powerSet = 7
        		}
-            if (powerSetPer == "80%"){
+            if (powerSetPer == "80"){
         	powerSet = 8
        		}
-            if (powerSetPer == "90%"){
+            if (powerSetPer == "90"){
         	powerSet = 9
        		}
-            if (powerSetPer == "100%"){
+            if (powerSetPer == "100"){
         	powerSet = 10
        		}
         // DO LIKE LIST INSTEAD 0, 10, 20, 30 etc so no issues powerSetRound = Math.floor(powerSet)
@@ -993,15 +1020,12 @@ def configure() {
 		zwave.associationV1.associationSet(groupingIdentifier:1, nodeId:[zwaveHubNodeId]).format(),
         zwave.configurationV2.configurationSet(configurationValue: [0, tempModeParam], parameterNumber: 2, size: 2).format(),
       	zwave.configurationV2.configurationSet(configurationValue: [0, floorSensParam], parameterNumber: 3, size: 2).format(),
-       zwave.configurationV2.configurationSet(configurationValue: [0, 0], parameterNumber: 3, size: 2).format(),
        	zwave.configurationV2.configurationSet(configurationValue: [floorMinX, floorMinY], parameterNumber: 5, size: 2).format(),
-        //zwave.configurationV2.configurationSet(configurationValue: [0, 50], parameterNumber: 5, size: 2).format(),
        	zwave.configurationV2.configurationSet(configurationValue: [floorMaxX, floorMaxY], parameterNumber: 6, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [AirMinX, AirMinY], parameterNumber: 7, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [AirMaxX, AirMaxY], parameterNumber: 8, size: 2).format(),
         zwave.configurationV2.configurationSet(configurationValue: [powerLo], parameterNumber: 9, size: 1).format(),
-        zwave.configurationV2.configurationSet(configurationValue: [powerSet], parameterNumber: 12, size: 1).format(),
-        //zwave.configurationV2.configurationSet(configurationValue: [1, 144], parameterNumber: 6, size: 2).format(),
+        zwave.configurationV2.configurationSet(configurationValue: [powerSet], parameterNumber: 12, size: 2).format(),
         zwave.thermostatModeV2.thermostatModeSupportedGet().format(),
         poll()
 	], 650)
