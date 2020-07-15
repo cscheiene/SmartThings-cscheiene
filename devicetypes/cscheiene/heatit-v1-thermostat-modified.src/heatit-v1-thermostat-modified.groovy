@@ -106,14 +106,14 @@
 }
 
 metadata {
-	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", ocfDeviceType: "oic.d.thermostat", vid: "generic-thermostat-1") {
+	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV", mnmm: "SmartThingsCommunity", vid: "generic-thermostat-1", ocfDeviceType: "oic.d.thermostat") {
 		capability "Actuator"
 		capability "Temperature Measurement"
-		//capability "Relative Humidity Measurement"
+        //capability "Thermostat Setpoint"
 		capability "Thermostat"
-        capability "Thermostat Mode"
-        capability "Thermostat Heating Setpoint"
-        capability "Thermostat Setpoint"
+		capability "Thermostat Mode"
+		capability "Thermostat Heating Setpoint"
+		capability "Thermostat Operating State"
 		capability "Configuration"
 		capability "Polling"
 		capability "Sensor"
@@ -399,7 +399,7 @@ def zwaveEvent(physicalgraph.zwave.commands.sensormultilevelv5.SensorMultilevelR
     log.debug("Scale is Celcius")
     }
     log.debug("Air Temperature is: $cmd.scaledSensorValue °C")
-    sendEvent(name: "temperature", value: cmd.scaledSensorValue) 
+    sendEvent(name: "temperature", value: cmd.scaledSensorValue, unit: getTemperatureScale()) 
 
     
   /*  def map = [:]
