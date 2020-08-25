@@ -16,7 +16,7 @@
  *
  */
 metadata {
-	definition (name: "Netatmo Rain", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThingsCommunity", vid: "de2ea3e0-7325-3714-a5e5-1f32ca0df6d7", ocfDeviceType: "x.com.st.d.sensor.moisture") {
+	definition (name: "Netatmo Rain", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThingsCommunity", vid: "84cf66f4-66e4-3a14-945b-5c609092ef36", ocfDeviceType: "x.com.st.d.sensor.moisture") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
@@ -26,13 +26,8 @@ metadata {
         capability "islandtravel33177.rainday"
         capability "islandtravel33177.lastUpdate"
         
-        //attribute "rain", "number"
-        //attribute "rainSumHour", "number"
-        //attribute "rainSumDay", "number"
         attribute "units", "string"
-        //attribute "lastupdate", "string"
-        
-        command "poll"
+
 	}
 
 	simulator {

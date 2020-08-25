@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "cscheiene", mnmn: "SmartThingsCommunity", vid: "45215666-0ceb-3df3-9f81-774db869eb34", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Additional Module", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "4ee8badb-ce3a-3a50-b333-83ce37eeb19c") {
  		capability "Temperature Measurement"
         capability "Sensor"
         capability "Battery"
@@ -22,11 +22,10 @@ metadata {
         capability "Refresh"
         capability "Health Check"
         capability "islandtravel33177.lastUpdate"
+        capability "islandtravel33177.tempTrend"
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"
-        attribute "temp_trend", "string"
-        //attribute "lastupdate", "string"
 	}
 
 	simulator {
@@ -69,8 +68,8 @@ metadata {
         valueTile("max_temp", "max_temp", width: 2, height: 1) {
  			state "max_temp", label: 'Max: ${currentValue}°'
  		}
-        valueTile("temp_trend", "temp_trend", width: 4, height: 1) {
- 			state "temp_trend", label: 'Temp Trend: ${currentValue}'
+        valueTile("tempTrend", "tempTrend", width: 4, height: 1) {
+ 			state "tempTrend", label: 'Temp Trend: ${currentValue}'
  		}         
 		valueTile("battery", "device.battery", inactiveLabel: false, width: 2, height: 2) {
 			state "battery_percent", label:'Battery: ${currentValue}%', backgroundColors:[
@@ -109,7 +108,7 @@ metadata {
  		}              
                
         main "temperature"
- 		details(["temperature", "min_temp","date_min_temp","carbonDioxide", "max_temp","date_max_temp", "temp_trend","lastupdate","battery","refresh"])
+ 		details(["temperature", "min_temp","date_min_temp","carbonDioxide", "max_temp","date_max_temp", "tempTrend","lastupdate","battery","refresh"])
 	}
 }
 

@@ -1,7 +1,7 @@
 /**
- *  netatmo-outdoor Date: 01.02.2019
+ *  Netatmo Outdoor Module
  *
- *  Copyright 2014 Brian Steere
+ *  Copyright 2019 cscheiene
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -11,26 +11,17 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
- *
- *  Based on Brian Steere's netatmo-outdoor DTH
- *
- *  
- * 
  */
 metadata {
-	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "Brian Steere,cscheiene", mnmn: "SmartThings", vid: "SmartThings-smartthings-Xiaomi_Temperature_Humidity_Sensor", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "b6454229-3609-3701-bfef-25c9f8f36755") {
+		capability "Battery"
+		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
-        capability "Relative Humidity Measurement"		
-        capability "Sensor"
-        capability "Battery"
-        capability "Refresh"
-        capability "Health Check"
-        //capability "Thermostat"
+        capability "islandtravel33177.lastUpdate"
+        capability "islandtravel33177.tempTrend"
         
         attribute "min_temp", "number"
         attribute "max_temp", "number"   
-        attribute "temp_trend", "string"
-        attribute "lastupdate", "string"
 	}
 
 	simulator {
@@ -65,8 +56,8 @@ metadata {
         valueTile("max_temp", "max_temp", width: 2, height: 1) {
  			state "max_temp", label: 'Max: ${currentValue}°'
  		}
-        valueTile("temp_trend", "temp_trend", width: 4, height: 1) {
- 			state "temp_trend", label: 'Temp Trend: ${currentValue}'
+        valueTile("tempTrend", "tempTrend", width: 4, height: 1) {
+ 			state "tempTrend", label: 'Temp Trend: ${currentValue}'
  		}        
 		valueTile("battery", "device.battery", inactiveLabel: false, width: 2, height: 2) {
 			state "battery_percent", label:'Battery: ${currentValue}%', unit:"", backgroundColors:[
@@ -104,7 +95,7 @@ metadata {
  			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
  		}                
         main (["main"])
- 		details(["main", "min_temp","date_min_temp", "battery", "max_temp","date_max_temp", "temp_trend", "lastupdate","refresh"])
+ 		details(["main", "min_temp","date_min_temp", "battery", "max_temp","date_max_temp", "tempTrend", "lastupdate","refresh"])
 	}
 }
 
@@ -124,11 +115,11 @@ def refresh() {
     log.debug "Refreshing"
 	parent.poll()
 }
-
+/*
 def installed() {
 	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
 }
 
 def updated() {
 	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
-}
+}*/

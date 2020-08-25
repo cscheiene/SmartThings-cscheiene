@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", mnmn: "SmartThingsCommunity", vid: "2323b836-60ee-3640-b362-dc30f645ed81", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "cfd7f24e-d587-3b0c-9965-95f394512558") {
 		capability "Temperature Measurement"
         capability "Sensor"
         capability "Carbon Dioxide Measurement"
@@ -24,12 +24,11 @@ metadata {
         capability "Health Check"
         capability 'Atmospheric Pressure Measurement'
         capability "islandtravel33177.lastUpdate"
+        capability "islandtravel33177.tempTrend"
 
         attribute "min_temp", "number"
         attribute "max_temp", "number"
-        attribute "temp_trend", "string"
         attribute "pressure_trend", "string"
-        //attribute "lastupdate", "string"
 	}
 
 	simulator {
@@ -78,8 +77,8 @@ metadata {
  		valueTile("humidity", "device.humidity", inactiveLabel: false) {
  			state "humidity", label:'${currentValue}%'
  		}
-        valueTile("temp_trend", "temp_trend", width: 4, height: 1) {
- 			state "temp_trend", label: 'Temp Trend: ${currentValue}'
+        valueTile("tempTrend", "tempTrend", width: 4, height: 1) {
+ 			state "tempTrend", label: 'Temp Trend: ${currentValue}'
  		}
         valueTile("pressure_trend", "pressure_trend", width: 4, height: 1) {
  			state "pressure_trend", label: 'Press Trend: ${currentValue}'
@@ -118,7 +117,7 @@ metadata {
  		}
         
         main(["main"])
- 		details(["main","min_temp","date_min_temp","carbonDioxide", "max_temp","date_max_temp", "temp_trend","sound", "pressure", "units", "soundPressureLevel", "pressure_trend", "refresh", "lastupdate"])
+ 		details(["main","min_temp","date_min_temp","carbonDioxide", "max_temp","date_max_temp", "tempTrend","sound", "pressure", "units", "soundPressureLevel", "pressure_trend", "refresh", "lastupdate"])
 	}
 }
 

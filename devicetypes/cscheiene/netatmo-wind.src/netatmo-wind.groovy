@@ -17,27 +17,21 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "ddbd3bb0-b25b-312b-a2d0-725fd79f94ef", ocfDeviceType: 'oic.wk.d') {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmm: "SmartThingsCommunity", vid: "e6546f8c-bbf5-3dba-aba4-762bb0b104ae") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
         capability "Health Check"
 		capability "islandtravel33177.wind"
         capability "islandtravel33177.lastUpdate"
-        capability "islandtravel33177.windGust"
+        capability "islandtravel33177.gust"
         capability "islandtravel33177.windMax"
+        capability "islandtravel33177.windMaxTime"
+        capability "islandtravel33177.windAngleText"
+        capability "islandtravel33177.gustAngleText"
         
         attribute "units", "string"
-        //attribute "WindStrength", "number"
-        //attribute "WindAngle", "number"
-        //attribute "GustStrength", "number"
-        //attribute "GustAngle", "number"
-        //attribute "max_wind_str", "number"
-        //attribute "lastupdate", "string"
-        //attribute "date_max_wind_str", "string"
-        
-        command "poll"
-	}
+    }
 
 	simulator {
 		// TODO: define status and reply messages here
