@@ -543,7 +543,7 @@ def poll() {
 				child?.sendEvent(name: 'temperature', value: cToPref(data['Temperature']) as float, unit: getTemperatureScale())
 				child?.sendEvent(name: 'carbonDioxide', value: data['CO2'], unit: "ppm")
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
-                child?.sendEvent(name: 'temp_trend', value: data['temp_trend'], unit: "")                
+                child?.sendEvent(name: 'tempTrend', value: data['temp_trend'], unit: "")                
                 child?.sendEvent(name: 'atmosphericPressure', value: (pressToPref(data['Pressure'])).toDouble().round(), unit: settings.pressUnits)
                 child?.sendEvent(name: 'pressure', value: (pressToPref(data['Pressure'])).toDouble().trunc(2), unit: settings.pressUnits)
 				child?.sendEvent(name: 'soundPressureLevel', value: data['Noise'], unit: "db")
@@ -564,7 +564,7 @@ def poll() {
 				log.debug "Updating Outdoor Module $data"
 				child?.sendEvent(name: 'temperature', value: cToPref(data['Temperature']) as float, unit: getTemperatureScale())
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
-                child?.sendEvent(name: 'temp_trend', value: data['temp_trend'], unit: "")
+                child?.sendEvent(name: 'tempTrend', value: data['temp_trend'], unit: "")
                 child?.sendEvent(name: 'min_temp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'max_temp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
@@ -597,7 +597,7 @@ def poll() {
 				child?.sendEvent(name: 'temperature', value: cToPref(data['Temperature']) as float, unit: getTemperatureScale())
 				child?.sendEvent(name: 'carbonDioxide', value: data['CO2'], unit: "ppm")
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
-                child?.sendEvent(name: 'temp_trend', value: data['temp_trend'], unit: "")                
+                child?.sendEvent(name: 'tempTrend', value: data['temp_trend'], unit: "")                
                 child?.sendEvent(name: 'min_temp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'max_temp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
@@ -611,21 +611,24 @@ def poll() {
                 log.error "Windmodule is missing data"
                 } else {
                 log.debug "Updating Wind Module $data"
-				child?.sendEvent(name: 'windVector', value: data['WindAngle'], unit: "°")
+				child?.sendEvent(name: 'wind', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)                
                 child?.sendEvent(name: 'windAngle', value: data['WindAngle'], unit: "°")
+                child?.sendEvent(name: 'windAngleText', value: windTotext(data['WindAngle']))
+                child?.sendEvent(name: 'windDirection', value: windTotextonly(data['WindAngle']))
+                child?.sendEvent(name: 'gustStrength', value: (windToPref(data['GustStrength'])).toDouble().trunc(1), unit: settings.windUnits)                
                 child?.sendEvent(name: 'gustAngle', value: data['GustAngle'], unit: "°")
-                child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
-				child?.sendEvent(name: 'wind', value: (windToPref(data['WindStrength'])).toDouble().trunc(1), unit: settings.windUnits)
-                child?.sendEvent(name: 'gustStrength', value: (windToPref(data['GustStrength'])).toDouble().trunc(1), unit: settings.windUnits)
+                child?.sendEvent(name: 'gustAngleText', value: gustTotext(data['GustAngle']))
+                child?.sendEvent(name: 'gustDirection', value: windTotextonly(data['GustAngle']))
                 child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
-                child?.sendEvent(name: 'units', value: settings.windUnits)
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
-                child?.sendEvent(name: 'windMaxTime', value: lastUpdated(data['date_max_wind_str']), unit: "")
-                child?.sendEvent(name: 'WindDirection', value: windTotext(data['WindAngle']))
-                child?.sendEvent(name: 'GustDirection', value: gustTotext(data['GustAngle']))
+                child?.sendEvent(name: 'windMaxTime', value: lastUpdated(data['date_max_wind_str']))
+                child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%") 
+                //old app, to be removed
 				child?.sendEvent(name: 'WindStrengthUnits', value: windToPrefUnits(data['WindStrength']), displayed: false)
                 child?.sendEvent(name: 'GustStrengthUnits', value: windToPrefUnits(data['GustStrength']), displayed: false)
-                child?.sendEvent(name: 'max_wind_strUnits', value: windToPrefUnits(data['max_wind_str']), displayed: false)               
+                child?.sendEvent(name: 'max_wind_strUnits', value: windToPrefUnits(data['max_wind_str']), displayed: false)
+                child?.sendEvent(name: 'units', value: settings.windUnits)                
+               
                 break;
 		}
       }
@@ -705,22 +708,24 @@ def lastUpdated(time) {
 }
 
 def windTotext(WindAngle) {
-	if(WindAngle < 23) { 
-    	return WindAngle + "° North"
+	if(WindAngle < 0) { 
+    	return "No Wind"
+    } else if (WindAngle < 23) {
+    	return WindAngle + "° North"        
     } else if (WindAngle < 68) {
-    	return WindAngle + "° NorthEast"
+    	return WindAngle + "° NEast"
     } else if (WindAngle < 113) {
     	return WindAngle + "° East"
     } else if (WindAngle < 158) {
-    	return WindAngle + "° SouthEast"
+    	return WindAngle + "° SEast"
     } else if (WindAngle < 203) {
     	return WindAngle + "° South"
     } else if (WindAngle < 248) {
-    	return WindAngle + "° SouthWest"
+    	return WindAngle + "° SWest"
     } else if (WindAngle < 293) {
     	return WindAngle + "° West"
     } else if (WindAngle < 338) {
-    	return WindAngle + "° NorthWest"
+    	return WindAngle + "° NWest"
     } else if (WindAngle < 361) {
     	return WindAngle + "° North"
     }
@@ -745,6 +750,52 @@ def gustTotext(GustAngle) {
     	return GustAngle + "° NWest"
     } else if (GustAngle < 361) {
     	return GustAngle + "° North"
+    }
+}
+
+def windTotextonly(WindAngle) {
+	if(WindAngle < 0) { 
+    	return "No Wind"
+    } else if (WindAngle < 23) {
+    	return "North"        
+    } else if (WindAngle < 68) {
+    	return "NEast"
+    } else if (WindAngle < 113) {
+    	return "East"
+    } else if (WindAngle < 158) {
+    	return "SEast"
+    } else if (WindAngle < 203) {
+    	return "South"
+    } else if (WindAngle < 248) {
+    	return "SWest"
+    } else if (WindAngle < 293) {
+    	return "West"
+    } else if (WindAngle < 338) {
+    	return "NWest"
+    } else if (WindAngle < 361) {
+    	return "North"
+    }
+}
+
+def gustTotextonly(GustAngle) {
+	if(GustAngle < 23) { 
+    	return "North"
+    } else if (GustAngle < 68) {
+    	return "NEast"
+    } else if (GustAngle < 113) {
+    	return "East"
+    } else if (GustAngle < 158) {
+    	return "SEast"
+    } else if (GustAngle < 203) {
+    	return "South"
+    } else if (GustAngle < 248) {
+    	return "SWest"
+    } else if (GustAngle < 293) {
+    	return "West"
+    } else if (GustAngle < 338) {
+    	return "NWest"
+    } else if (GustAngle < 361) {
+    	return "North"
     }
 }
 
