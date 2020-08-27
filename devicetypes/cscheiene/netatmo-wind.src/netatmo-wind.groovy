@@ -17,7 +17,7 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmm: "SmartThingsCommunity", vid: "e6546f8c-bbf5-3dba-aba4-762bb0b104ae") {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmm: "SmartThingsCommunity", vid: "787d5e2d-80e1-3f39-bf73-026acafdc48f") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
@@ -25,7 +25,7 @@ metadata {
 		capability "islandtravel33177.wind"
         capability "islandtravel33177.lastUpdate"
         capability "islandtravel33177.gust"
-        capability "islandtravel33177.windMax"
+        capability "islandtravel33177.windMaximum"
         capability "islandtravel33177.windMaxTime"
         capability "islandtravel33177.windAngleText"
         capability "islandtravel33177.gustAngleText"
