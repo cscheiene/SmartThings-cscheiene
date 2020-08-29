@@ -480,7 +480,7 @@ def listDevices() {
         section("Preferences") {
         	input "rainUnits", "enum", title: "Rain Units", description: "Please select rain units", required: true, options: [MM:'Millimeters', IN:'Inches']
             input "pressUnits", "enum", title: "Pressure Units", description: "Please select pressure units", required: true, options: [mbar:'mbar', inhg:'inhg']            
-            input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [KPH:'KPH', MS:'MS', MPH:'MPH', KTS:'KTS']
+            input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [KPH:'KPH', MS:'MS', MPH:'MPH', KTS:'KTS', BFT:'BFT']
             input "time", "enum", title: "Time Format", description: "Please select time format", required: true, options: [12:'12 Hour', 24:'24 Hour']
             input "sound", "number", title: "Sound Sensor: \nEnter the value when sound will be marked as detected", description: "Please enter number", required: false
         }
@@ -559,7 +559,7 @@ def poll() {
                 }
 			case 'NAModule1':
 				if(data == null) {
-                log.error "Ourdoor Module is missing data"
+                log.error "Outdoor Module is missing data"
                 } else {            
 				log.debug "Updating Outdoor Module $data"
 				child?.sendEvent(name: 'temperature', value: cToPref(data['Temperature']) as float, unit: getTemperatureScale())
@@ -619,7 +619,7 @@ def poll() {
                 child?.sendEvent(name: 'gustAngle', value: data['GustAngle'], unit: "°")
                 child?.sendEvent(name: 'gustAngleText', value: gustTotext(data['GustAngle']))
                 child?.sendEvent(name: 'gustDirection', value: windTotextonly(data['GustAngle']))
-                child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
+                child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits, isStateChange:true)
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
                 child?.sendEvent(name: 'windMaxTime', value: lastUpdated(data['date_max_wind_str']))
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%") 
@@ -676,6 +676,32 @@ def windToPref(Wind) {
     	return Wind * 0.621371192
     } else if (settings.windUnits == 'KTS') {
     	return Wind * 0.539956803
+    } else if (settings.windUnits == 'BFT' && Wind < 1) {
+    	return 0
+    } else if (settings.windUnits == 'BFT' && Wind < 6) {
+    	return 1
+    } else if (settings.windUnits == 'BFT' && Wind < 12) {
+    	return 2
+    } else if (settings.windUnits == 'BFT' && Wind < 20) {
+    	return 3
+    } else if (settings.windUnits == 'BFT' && Wind < 29) {
+    	return 4
+    } else if (settings.windUnits == 'BFT' && Wind < 39) {
+    	return 5
+    } else if (settings.windUnits == 'BFT' && Wind < 50) {
+    	return 6
+    } else if (settings.windUnits == 'BFT' && Wind < 62) {
+    	return 7
+    } else if (settings.windUnits == 'BFT' && Wind < 75) {
+    	return 8
+    } else if (settings.windUnits == 'BFT' && Wind < 89) {
+    	return 9
+    } else if (settings.windUnits == 'BFT' && Wind < 103) {
+    	return 10
+    } else if (settings.windUnits == 'BFT' && Wind < 118) {
+    	return 11
+    } else if (settings.windUnits == 'BFT' && Wind >= 118) {
+    	return 12
     }
 }
 
