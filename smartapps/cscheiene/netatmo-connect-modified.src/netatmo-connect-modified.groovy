@@ -619,7 +619,7 @@ def poll() {
                 child?.sendEvent(name: 'gustAngle', value: data['GustAngle'], unit: "°")
                 child?.sendEvent(name: 'gustAngleText', value: gustTotext(data['GustAngle']))
                 child?.sendEvent(name: 'gustDirection', value: windTotextonly(data['GustAngle']))
-                child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits, isStateChange:true)
+                child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
                 child?.sendEvent(name: 'windMaxTime', value: lastUpdated(data['date_max_wind_str']))
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%") 
