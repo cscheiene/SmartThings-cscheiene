@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "1e855c81-c4d3-32fd-b7f6-b21a4dae168f") {
+	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "a4c549e7-9cdb-3911-b53c-bb454cd96c8c") {
 		capability "Battery"
 		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
