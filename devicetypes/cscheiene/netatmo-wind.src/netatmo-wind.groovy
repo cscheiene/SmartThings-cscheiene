@@ -17,7 +17,7 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmm: "SmartThingsCommunity", vid: "787d5e2d-80e1-3f39-bf73-026acafdc48f") {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "787d5e2d-80e1-3f39-bf73-026acafdc48f") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"

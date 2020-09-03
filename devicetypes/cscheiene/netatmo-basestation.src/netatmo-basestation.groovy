@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmm: "SmartThingsCommunity", vid: "cfd7f24e-d587-3b0c-9965-95f394512558") {
+	definition (name: "Netatmo Basestation", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmn: "SmartThingsCommunity", vid: "cfd7f24e-d587-3b0c-9965-95f394512558") {
 		capability "Temperature Measurement"
         capability "Sensor"
         capability "Carbon Dioxide Measurement"
