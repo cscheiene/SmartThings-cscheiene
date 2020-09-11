@@ -14,7 +14,9 @@
  */
 metadata {
 	definition (name: "Netatmo Outdoor Module", namespace: "cscheiene", author: "cscheiene", ocfDeviceType: "oic.d.thermostat", mnmn: "SmartThingsCommunity", vid: "a4c549e7-9cdb-3911-b53c-bb454cd96c8c") {
-		capability "Battery"
+		capability "Sensor"
+        capability "Health Check"
+        capability "Battery"
 		capability "Relative Humidity Measurement"
 		capability "Temperature Measurement"
         capability "islandtravel33177.lastUpdate"
@@ -116,11 +118,11 @@ def refresh() {
     log.debug "Refreshing"
 	parent.poll()
 }
-/*
+
 def installed() {
 	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
 }
 
 def updated() {
 	sendEvent(name: "checkInterval", value: 4 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "cloud"])
-}*/
+}
