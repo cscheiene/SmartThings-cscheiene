@@ -18,6 +18,7 @@ metadata {
 		capability "Sensor"
         capability "Actuator"
 		capability "Switch"
+        capability "Occupancy Sensor"
 
 		command "arrived"
 		command "departed"
@@ -48,6 +49,7 @@ def arrived() {
 	log.trace "Executing 'arrived'"
 	sendEvent(name: "presence", value: "present")
     sendEvent(name: "switch", value: "on")
+    sendEvent(name: "occupancy", value: "occupied")
 }
 
 
@@ -55,16 +57,19 @@ def departed() {
 	log.trace "Executing 'arrived'"
 	sendEvent(name: "presence", value: "not present")
     sendEvent(name: "switch", value: "off")
+    sendEvent(name: "occupancy", value: "unoccupied")
 }
 
 def on() {
 	log.trace "Switch on, executing 'arrived'"
 	sendEvent(name: "presence", value: "present")
     sendEvent(name: "switch", value: "on")
+    sendEvent(name: "occupancy", value: "occupied")
 }
 
 def off() {
 	log.trace "Switch off, executing 'arrived'"
 	sendEvent(name: "presence", value: "not present")
     sendEvent(name: "switch", value: "off")
+    sendEvent(name: "occupancy", value: "unoccupied")
 }
