@@ -10,13 +10,6 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
- * V0.9.3 20/09/2016
- *
- *
- * Changelog:
- *
- * 0.9.3 - Corrected the energySaveHeat Command so that you can specifically activate this from CoRE rules
- * 0.9.2 - Fixed an issue preventing some commands being fired when they are not triggered from the DTH UI
  */
  
  preferences {
@@ -104,17 +97,15 @@
 }
 
 metadata {
-	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV,cscheiene", mnmm: "SmartThingsCommunity", vid: "generic-thermostat-1", ocfDeviceType: "oic.d.thermostat") {
+	definition (name: "Heatit V1 Thermostat Modified", namespace: "cscheiene", author: "AdamV,cscheiene", mnmn: "SmartThingsCommunity", vid: "83fe9a87-ddfd-3922-90ec-1c84b3d3cc8d", ocfDeviceType: "oic.d.thermostat") {
 		capability "Actuator"
 		capability "Temperature Measurement"
-        //capability "Thermostat Setpoint"
-		capability "Thermostat"
-		capability "Thermostat Mode"
 		capability "Thermostat Heating Setpoint"
-		capability "Thermostat Operating State"
+        capability "Thermostat Mode"
 		capability "Configuration"
 		capability "Polling"
 		capability "Sensor"
+        capability "Refresh"
         capability "islandtravel33177.heatitTemperatureSensor"
 		
 		//attribute "thermostatFanState", "string"
@@ -803,7 +794,14 @@ def setCoolingSetpoint(Double degrees, Integer delay = 30000) {
 }
 */
 
+def refresh() {
+    log.debug "Running refresh"
+	configure()
+}
+
+
 def poll() {
+log.debug "Running poll"
 	delayBetween([
 		zwave.sensorMultilevelV5.sensorMultilevelGet().format(), // current temperature
 		zwave.thermostatSetpointV2.thermostatSetpointGet(setpointType: 1).format(),
