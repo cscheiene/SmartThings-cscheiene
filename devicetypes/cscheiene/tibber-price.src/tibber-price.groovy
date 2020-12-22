@@ -47,12 +47,16 @@ def initialize() {
 	state.price = 100;
 	log.debug("init")
     getPrice()
-    schedule("0 2 * * * ?", getPrice)
+    schedule("0 1,3 * * * ?", getPrice)
 }
 
 def installed() {
 	log.debug "Installed"
     initialize()
+}
+
+def ping() {
+    refresh()
 }
 
 def updated() {
