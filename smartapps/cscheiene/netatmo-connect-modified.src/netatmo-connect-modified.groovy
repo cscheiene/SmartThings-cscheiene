@@ -486,6 +486,7 @@ def listDevices() {
             input "windUnits", "enum", title: "Wind Units", description: "Please select wind units", required: true, options: [KPH:'KPH', MS:'MS', MPH:'MPH', KTS:'KTS', BFT:'BFT']
             input "time", "enum", title: "Time Format", description: "Please select time format", required: true, options: [12:'12 Hour', 24:'24 Hour']
             input "sound", "number", title: "Sound Sensor: \nEnter the value when sound will be marked as detected", description: "Please enter number", required: false
+            input title: "Version ID", description: "060221", type: "paragraph", element: "paragraph"
         }
 	}
 }
@@ -551,13 +552,12 @@ def poll() {
                 child?.sendEvent(name: 'pressure', value: (pressToPref(data['Pressure'])).toDouble().trunc(2), unit: settings.pressUnits)
 				child?.sendEvent(name: 'soundPressureLevel', value: data['Noise'], unit: "db")
                 child?.sendEvent(name: 'sound', value: noiseTosound(data['Noise']))
-                child?.sendEvent(name: 'pressure_trend', value: data['pressure_trend'], unit: "")
-                child?.sendEvent(name: 'min_temp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
-                child?.sendEvent(name: 'max_temp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
-                child?.sendEvent(name: 'units', value: settings.pressUnits)
+                child?.sendEvent(name: 'pressureTrend', value: data['pressure_trend'], unit: "")
+                child?.sendEvent(name: 'minTemp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
+                child?.sendEvent(name: 'maxTemp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']), unit: "")
-                child?.sendEvent(name: 'date_min_temp', value: lastUpdated(data['date_min_temp']), unit: "")
-                child?.sendEvent(name: 'date_max_temp', value: lastUpdated(data['date_max_temp']), unit: "")
+                child?.sendEvent(name: 'minTempTime', value: lastUpdated(data['date_min_temp']), unit: "")
+                child?.sendEvent(name: 'maxTempTime', value: lastUpdated(data['date_max_temp']), unit: "")
 				break;
                 }
 			case 'NAModule1':
@@ -568,12 +568,12 @@ def poll() {
 				child?.sendEvent(name: 'temperature', value: cToPref(data['Temperature']) as float, unit: getTemperatureScale())
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
                 child?.sendEvent(name: 'tempTrend', value: data['temp_trend'], unit: "")
-                child?.sendEvent(name: 'min_temp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
-                child?.sendEvent(name: 'max_temp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
+                child?.sendEvent(name: 'minTemp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
+                child?.sendEvent(name: 'maxTemp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']), unit: "")
-                child?.sendEvent(name: 'date_min_temp', value: lastUpdated(data['date_min_temp']), unit: "")
-                child?.sendEvent(name: 'date_max_temp', value: lastUpdated(data['date_max_temp']), unit: "")
+                child?.sendEvent(name: 'minTempTime', value: lastUpdated(data['date_min_temp']), unit: "")
+                child?.sendEvent(name: 'maxTempTime', value: lastUpdated(data['date_max_temp']), unit: "")
 				break;
                 }
 			case 'NAModule3':
@@ -584,12 +584,8 @@ def poll() {
 				child?.sendEvent(name: 'rain', value: (rainToPref(data['Rain'])), unit: settings.rainUnits)
 				child?.sendEvent(name: 'rainhour', value: (rainToPref(data['sum_rain_1'])), unit: settings.rainUnits)
 				child?.sendEvent(name: 'rainday', value: (rainToPref(data['sum_rain_24'])), unit: settings.rainUnits)
-				child?.sendEvent(name: 'units', value: settings.rainUnits)
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
-                child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
-				child?.sendEvent(name: 'rainUnits', value: rainToPrefUnits(data['Rain']), displayed: false)
-				child?.sendEvent(name: 'rainSumHourUnits', value: rainToPrefUnits(data['sum_rain_1']), displayed: false)
-				child?.sendEvent(name: 'rainSumDayUnits', value: rainToPrefUnits(data['sum_rain_24']), displayed: false)                
+                child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))                
 				break;
                 }
 			case 'NAModule4':
@@ -601,12 +597,12 @@ def poll() {
 				child?.sendEvent(name: 'carbonDioxide', value: data['CO2'], unit: "ppm")
 				child?.sendEvent(name: 'humidity', value: data['Humidity'], unit: "%")
                 child?.sendEvent(name: 'tempTrend', value: data['temp_trend'], unit: "")                
-                child?.sendEvent(name: 'min_temp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
-                child?.sendEvent(name: 'max_temp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
+                child?.sendEvent(name: 'minTemp', value: cToPref(data['min_temp']) as float, unit: getTemperatureScale())
+                child?.sendEvent(name: 'maxTemp', value: cToPref(data['max_temp']) as float, unit: getTemperatureScale())
                 child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']), unit: "")
-                child?.sendEvent(name: 'date_min_temp', value: lastUpdated(data['date_min_temp']), unit: "")
-                child?.sendEvent(name: 'date_max_temp', value: lastUpdated(data['date_max_temp']), unit: "")
+                child?.sendEvent(name: 'minTempTime', value: lastUpdated(data['date_min_temp']), unit: "")
+                child?.sendEvent(name: 'maxTempTime', value: lastUpdated(data['date_max_temp']), unit: "")
 				break;
                 }
             case 'NAModule2':
@@ -625,13 +621,7 @@ def poll() {
                 child?.sendEvent(name: 'windMax', value: (windToPref(data['max_wind_str'])).toDouble().trunc(1), unit: settings.windUnits)
                 child?.sendEvent(name: 'lastupdate', value: lastUpdated(data['time_utc']))
                 child?.sendEvent(name: 'windMaxTime', value: lastUpdated(data['date_max_wind_str']))
-                child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%") 
-                //old app, to be removed
-				child?.sendEvent(name: 'WindStrengthUnits', value: windToPrefUnits(data['WindStrength']), displayed: false)
-                child?.sendEvent(name: 'GustStrengthUnits', value: windToPrefUnits(data['GustStrength']), displayed: false)
-                child?.sendEvent(name: 'max_wind_strUnits', value: windToPrefUnits(data['max_wind_str']), displayed: false)
-                child?.sendEvent(name: 'units', value: settings.windUnits)                
-               
+                child?.sendEvent(name: 'battery', value: detail['battery_percent'], unit: "%")                           
                 break;
 		}
       }
