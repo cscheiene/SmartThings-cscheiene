@@ -25,7 +25,7 @@ metadata {
         capability "islandtravel33177.tibberPriceMinDay"
         capability "islandtravel33177.tibberPriceMinLabel"
         capability "islandtravel33177.tibberPricePlusTwoHour"
-
+		capability "Energy Meter" //workaround for Actions tiles etc
 		attribute "priceNextHourLabel", "string"
 		attribute "pricePlus2HourLabel", "string"
 		attribute "currency", "string"
@@ -115,7 +115,7 @@ def getPrice() {
                     state.priceMinDay = priceMinDay
                     state.priceMinDayLabel = priceMinDayLabel
 
-                    //sendEvent(name: "energy", value: price, unit: currency)
+                    sendEvent(name: "energy", value: price, unit: currency)
                     sendEvent(name: "price", value: state.price, unit: currency)
                     sendEvent(name: "priceNextHour", value: state.priceNextHour, unit: currency)
                     sendEvent(name: "pricePlusTwoHour", value: state.pricePlusTwoHour, unit: currency)
@@ -139,8 +139,8 @@ def getPrice() {
 def parse(String description) {
     log.debug "parse description: ${description}"
     def eventMap = [
-        //createEvent(name: "energy", value: state.price, unit: state.currency)
-        createEvent(name: "price", value: state.price, unit: state.currency)
+        createEvent(name: "energy", value: state.price, unit: state.currency)
+        ,createEvent(name: "price", value: state.price, unit: state.currency)
         ,createEvent(name: "priceNextHour", value: state.priceNextHour, unit: state.currency)
         ,createEvent(name: "pricePlusTwoHour", value: state.pricePlusTwoHour, unit: state.currency)
         ,createEvent(name: "priceMaxDay", value: state.priceMaxDay, unit: state.currency)
