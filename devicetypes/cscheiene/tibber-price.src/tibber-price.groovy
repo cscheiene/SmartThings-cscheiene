@@ -15,7 +15,7 @@
  *  Author: tibberdev,cscheiene
  */
 metadata {
-	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "6e5f6292-da50-3da7-86b4-34daf862d9e4", ocfDeviceType: "x.com.st.d.energymeter") {
+	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "3f263344-6fc8-3dea-8ad4-660619f0af39", ocfDeviceType: "x.com.st.d.energymeter") {
 		capability "Sensor"
         capability "Refresh"
 		capability "islandtravel33177.tibberPriceNextHour"
@@ -25,8 +25,11 @@ metadata {
         capability "islandtravel33177.tibberPriceMinDay"
         capability "islandtravel33177.tibberPriceMinLabel"
         capability "islandtravel33177.tibberPricePlusTwoHour"
+        capability "islandtravel33177.tibberPriceLevel"
+        capability "islandtravel33177.tibberConsumptionPrevHour"
 		capability "Energy Meter" //workaround for Actions tiles etc
-		attribute "priceNextHourLabel", "string"
+		
+        attribute "priceNextHourLabel", "string"
 		attribute "pricePlus2HourLabel", "string"
 		attribute "currency", "string"
 	}
@@ -40,6 +43,36 @@ metadata {
             required: true,
             displayDuringSetup: true
         )
+		input (
+            name: "NORMAL",
+            type: "paragraph",
+            title: "NORMAL",
+            description: "The price is greater than 90 % and smaller than 115 % compared to average price."
+        )
+        input (
+            name: "CHEAP",
+            type: "paragraph",
+            title: "CHEAP",
+            description: "The price is greater than 60 % and smaller or equal to 90 % compared to average price."
+        )
+        input (
+            name: "VERY CHEAP",
+            type: "paragraph",
+            title: "VERY CHEAP",
+            description: "The price is smaller or equal to 60 % compared to average price."
+        )
+        input (
+            name: "EXPENSIVE",
+            type: "paragraph",
+            title: "EXPENSIVE",
+            description: "The price is greater or equal to 115 % and smaller than 140 % compared to average price."
+        )
+        input (
+            name: "VERY EXPENSIVE",
+            type: "paragraph",
+            title: "VERY EXPENSIVE",
+            description: "The price is greater or equal to 140 % compared to average price."
+        )
     }
 }
 
@@ -47,7 +80,7 @@ def initialize() {
 	state.price = 100;
 	log.debug("init")
     getPrice()
-    schedule("0 1,3 * * * ?", getPrice)
+    schedule("0 1,5,10,15,20,25,30 * * * ?", getPrice)
 }
 
 def installed() {
@@ -101,10 +134,16 @@ def getPrice() {
                     def pricePlusTwoHour = Math.round(priceNextHours[1] *100)
                     def pricePlus2HourLabel = "@ ${priceNextHours[3]}"
                     def currency = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.currency
+                    def level = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.level
+                    def consumptionPrevHour = resp.data.data.viewer.homes[0].consumption.nodes[0].consumption
+                    
+                    
+                    
 
                     currency = "${currency}: ${currencyToMinor(currency)}/kWh"
 
                     state.currency = currency
+                    state.level = level
                     state.price = price
                     state.priceNextHour = priceNextHour
                     state.priceNextHourLabel = priceNextHourLabel
@@ -115,6 +154,7 @@ def getPrice() {
                     state.priceMinDay = priceMinDay
                     state.priceMinDayLabel = priceMinDayLabel
 
+                    sendEvent(name: "consumptionPrevHour", value: consumptionPrevHour, unit: "kWh")
                     sendEvent(name: "energy", value: price, unit: currency)
                     sendEvent(name: "price", value: state.price, unit: currency)
                     sendEvent(name: "priceNextHour", value: state.priceNextHour, unit: currency)
@@ -128,7 +168,8 @@ def getPrice() {
                     sendEvent(name: "priceMinDayLabel", value: state.priceMinDayLabel)
 
                     sendEvent(name: "currency", value: state.currency)
-                    log.debug "$currency"
+                    sendEvent(name: "level", value: state.level)
+                    log.debug "$consumptionPrevHour"
                 }
             }
         } catch (e) {
@@ -140,6 +181,7 @@ def parse(String description) {
     log.debug "parse description: ${description}"
     def eventMap = [
         createEvent(name: "energy", value: state.price, unit: state.currency)
+        ,createEvent(name: "level", value: state.level)
         ,createEvent(name: "price", value: state.price, unit: state.currency)
         ,createEvent(name: "priceNextHour", value: state.priceNextHour, unit: state.currency)
         ,createEvent(name: "pricePlusTwoHour", value: state.pricePlusTwoHour, unit: state.currency)
@@ -166,18 +208,9 @@ def currencyToMinor(String currency){
     return currencyUnit;
     
 }
-def backgroundColors(){
-    return [
-		[value: 20, color: "#02A701"],
-      	[value: 39, color: "#6CCD00"],
-      	[value: 59, color: "#ECD400"],
-      	[value: 74, color: "#FD6700"],
-      	[value: 95, color: "#FE3500"]
-    ]
-}
 
 def graphQLApiQuery(){
-	return '{"query": "{viewer {homes {currentSubscription {priceInfo { current {total currency} today{ total startsAt } tomorrow{ total startsAt }}}}}}", "variables": null, "operationName": null}';
+    return '{"query": "{viewer {homes {consumption(resolution: HOURLY, last: 1) {nodes {consumption consumptionUnit}} currentSubscription {priceInfo { current {total currency level} today {total startsAt} tomorrow{ total startsAt }}}}}}", "variables": null, "operationName": null}';
 }
 
 def MaxValueTimestamp(List values){
