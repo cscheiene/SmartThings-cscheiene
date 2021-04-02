@@ -15,7 +15,7 @@
  *  Author: tibberdev,cscheiene
  */
 metadata {
-	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "3f263344-6fc8-3dea-8ad4-660619f0af39", ocfDeviceType: "x.com.st.d.energymeter") {
+	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "e995c3e8-0f3b-3e61-83dc-d22fa728df29", ocfDeviceType: "x.com.st.d.energymeter") {
 		capability "Sensor"
         capability "Refresh"
 		capability "islandtravel33177.tibberPriceNextHour"
@@ -27,10 +27,12 @@ metadata {
         capability "islandtravel33177.tibberPricePlusTwoHour"
         capability "islandtravel33177.tibberPriceLevel"
         capability "islandtravel33177.tibberConsumptionPrevHour"
+        capability "islandtravel33177.tibberPriceNextHourDisplay"
+        capability "islandtravel33177.tibberPricePlusTwoHourDisplay"
+        capability "islandtravel33177.tibberPriceMinDayDisplay"
+        capability "islandtravel33177.tibberPriceMaxDayDisplay"
 		capability "Energy Meter" //workaround for Actions tiles etc
 		
-        attribute "priceNextHourLabel", "string"
-		attribute "pricePlus2HourLabel", "string"
 		attribute "currency", "string"
 	}
 
@@ -42,6 +44,12 @@ metadata {
             description: "Enter the Tibber API key",
             required: true,
             displayDuringSetup: true
+        )
+        input (
+            name: "apkeylink",
+            type: "paragraph",
+            title: "API Key can be found here:",
+            description: "https://developer.tibber.com/settings/accesstoken"
         )
 		input (
             name: "NORMAL",
@@ -132,7 +140,7 @@ def getPrice() {
                     def priceNextHour = Math.round(priceNextHours[0] *100)
                     def priceNextHourLabel = "@ ${priceNextHours[2]}"
                     def pricePlusTwoHour = Math.round(priceNextHours[1] *100)
-                    def pricePlus2HourLabel = "@ ${priceNextHours[3]}"
+                    def pricePlusTwoHourLabel = "@ ${priceNextHours[3]}"
                     def currency = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.currency
                     def level = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.level
                     def consumptionPrevHour = resp.data.data.viewer.homes[0].consumption.nodes[0].consumption
@@ -148,7 +156,7 @@ def getPrice() {
                     state.priceNextHour = priceNextHour
                     state.priceNextHourLabel = priceNextHourLabel
                     state.pricePlusTwoHour = pricePlusTwoHour
-                    state.pricePlus2HourLabel = pricePlus2HourLabel
+                    state.pricePlusTwoHourLabel = pricePlusTwoHourLabel
                     state.priceMaxDay = priceMaxDay
                     state.priceMaxDayLabel = priceMaxDayLabel
                     state.priceMinDay = priceMinDay
@@ -161,15 +169,19 @@ def getPrice() {
                     sendEvent(name: "pricePlusTwoHour", value: state.pricePlusTwoHour, unit: currency)
                     sendEvent(name: "priceMaxDay", value: state.priceMaxDay, unit: currency)
                     sendEvent(name: "priceMinDay", value: state.priceMinDay, unit: currency)
+                    sendEvent(name: "priceMinDayDisplay", value: "$priceMinDay $currency @ $priceMinDayLabel")
+                    sendEvent(name: "priceMaxDayDisplay", value: "$priceMaxDay $currency @ $priceMaxDayLabel")
 
-                    sendEvent(name: "priceNextHourLabel", value: state.priceNextHourLabel)
-                    sendEvent(name: "pricePlus2HourLabel", value: state.pricePlus2HourLabel)
+                    sendEvent(name: "priceNextHourDisplay", value: "$priceNextHour $currency $priceNextHourLabel")
+                    sendEvent(name: "pricePlusTwoHourDisplay", value: "$pricePlusTwoHour $currency $pricePlusTwoHourLabel")
                     sendEvent(name: "priceMaxDayLabel", value: state.priceMaxDayLabel)
                     sendEvent(name: "priceMinDayLabel", value: state.priceMinDayLabel)
 
                     sendEvent(name: "currency", value: state.currency)
                     sendEvent(name: "level", value: state.level)
-                    log.debug "$consumptionPrevHour"
+                    
+                    
+                    log.debug "$level"
                 }
             }
         } catch (e) {

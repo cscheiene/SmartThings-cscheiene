@@ -17,7 +17,7 @@
  
  
 metadata {
-	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "787d5e2d-80e1-3f39-bf73-026acafdc48f") {
+	definition (name: "Netatmo Wind", namespace: "cscheiene", author: "Brian Steere, cscheiene", mnmn: "SmartThingsCommunity", vid: "27285402-5d92-310e-964a-3b1dddaf0503") {
 	    capability "Sensor"
         capability "Battery"
         capability "Refresh"
@@ -29,62 +29,13 @@ metadata {
         capability "islandtravel33177.windMaxTime"
         capability "islandtravel33177.windAngleText"
         capability "islandtravel33177.gustAngleText"
-        
-        attribute "units", "string"
     }
-
-	simulator {
-		// TODO: define status and reply messages here
-	}
 
     preferences {
         input title: "Settings", description: "To change units and time format, go to the Netatmo Connect App", displayDuringSetup: false, type: "paragraph", element: "paragraph"
         input title: "Information", description: "Your Netatmo station updates the Netatmo servers approximately every 10 minutes. The Netatmo Connect app polls these servers every 5 minutes. If the time of last update is equal to or less than 10 minutes, pressing the refresh button will have no effect", displayDuringSetup: false, type: "paragraph", element: "paragraph"
-        input title: "Version ID", description: "070920", displayDuringSetup: false, type: "paragraph", element: "paragraph"
+        input title: "Version ID", description: "020421", displayDuringSetup: false, type: "paragraph", element: "paragraph"
     }  
-    
-	tiles (scale: 2) {
-		multiAttributeTile(name:"main", type:"generic", width:6, height:4) {
-			tileAttribute("WindStrengthUnits", key: "PRIMARY_CONTROL") {
-            	attributeState "default", label:'${currentValue}', icon:"st.Weather.weather1", backgroundColor:"#00a0dc"
-            }
-            tileAttribute ("WindDirection", key: "SECONDARY_CONTROL") {
-				attributeState "WindDirection", label:'Direction: ${currentValue}'
-			}
-		}        
- 		valueTile("GustStrength", "device.GustStrengthUnits", width: 2, height: 1, inactiveLabel: false) {
- 			state "default", label:'Gust: ${currentValue}'
- 		}
-        valueTile("GustDirection", "device.GustDirection", width: 2, height: 1, inactiveLabel: false) {
- 			state "default", label:'${currentValue}'            
- 		}
-        valueTile("max_wind_str", "device.max_wind_strUnits", width: 2, height: 1, inactiveLabel: false) {
- 			state "default", label:'Max: ${currentValue}'            
- 		}
-		valueTile("battery", "device.battery", inactiveLabel: false, width: 2, height: 2) {
-			state "battery_percent", label:'Battery: ${currentValue}%', backgroundColors:[
-                [value: 20, color: "#ff0000"],
-                [value: 35, color: "#fd4e3a"],
-                [value: 50, color: "#fda63a"],
-                [value: 60, color: "#fdeb3a"],
-                [value: 75, color: "#d4fd3a"],
-                [value: 90, color: "#7cfd3a"],
-                [value: 99, color: "#55fd3a"]
-            ]
-		}       
- 		valueTile("lastupdate", "lastupdate", width: 4, height: 1, inactiveLabel: false) {
-            state "default", label:"Last updated: " + '${currentValue}'
-            }
-         valueTile("windMaxTime", "windMaxTime", width: 2, height: 1, inactiveLabel: false) {
-            state "default", label:'${currentValue}'
-            }
-        standardTile("refresh", "device.refresh", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
- 			state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
- 		}        
-        
-        main (["main"])
- 		details(["main", "GustStrength", "GustDirection","battery", "max_wind_str","windMaxTime" ,"lastupdate","refresh"])
-	}
 }
 
 // parse events into attributes
