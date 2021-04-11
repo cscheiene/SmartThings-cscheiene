@@ -81,6 +81,12 @@ metadata {
             title: "VERY EXPENSIVE",
             description: "The price is greater or equal to 140 % compared to average price."
         )
+        input (
+            name: "VERSION",
+            type: "paragraph",
+            title: "Version number",
+            description: "110421"
+        )
     }
 }
 
