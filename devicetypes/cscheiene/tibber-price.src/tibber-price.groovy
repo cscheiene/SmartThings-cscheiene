@@ -15,7 +15,7 @@
  *  Author: tibberdev,cscheiene
  */
 metadata {
-	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "e995c3e8-0f3b-3e61-83dc-d22fa728df29", ocfDeviceType: "x.com.st.d.energymeter") {
+	definition (name: "Tibber Price", namespace: "cscheiene", author: "tibberdev, cscheiene", mnmn: "SmartThingsCommunity", vid: "560e33c3-94b5-3b05-970c-de5af9ae5ae9", ocfDeviceType: "x.com.st.d.energymeter") {
 		capability "Sensor"
         capability "Refresh"
 		capability "islandtravel33177.tibberPriceNextHour"
@@ -31,6 +31,7 @@ metadata {
         capability "islandtravel33177.tibberPricePlusTwoHourDisplay"
         capability "islandtravel33177.tibberPriceMinDayDisplay"
         capability "islandtravel33177.tibberPriceMaxDayDisplay"
+        capability "islandtravel33177.tibberAddress"
 		capability "Energy Meter" //workaround for Actions tiles etc
 		
 		attribute "currency", "string"
@@ -87,8 +88,24 @@ metadata {
             title: "Version number",
             description: "110421"
         )
+        input (
+            name: "home",
+            type: "number",
+            title: "Home",
+            description: "Enter the home you want to display, default is 0",
+            required: true,
+            displayDuringSetup: true,
+        )
     }
 }
+
+def homeNumber() {
+		if(settings.home == null){
+        return 0
+        } else {
+        return settings.home}
+}        
+
 
 def initialize() {
 	state.price = 100;
@@ -128,11 +145,11 @@ def getPrice() {
         try {
             httpPostJson(params) { resp ->
                 if(resp.status == 200){
-                    def today = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.today
-                    def tomorrow = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.tomorrow
+                    def today = resp.data.data.viewer.homes[homeNumber()].currentSubscription.priceInfo.today
+                    def tomorrow = resp.data.data.viewer.homes[homeNumber()].currentSubscription.priceInfo.tomorrow
 
                     
-                    def price = Math.round(resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.total * 100)
+                    def price = Math.round(resp.data.data.viewer.homes[homeNumber()].currentSubscription.priceInfo.current.total * 100)
                     def priceMaxDay = Math.round(MaxValue(today) *100)
                     def priceMaxDayLabel = "${MaxValueTimestamp(today)}:00"
                     def priceMinDay = Math.round(MinValue(today) *100)
@@ -147,9 +164,10 @@ def getPrice() {
                     def priceNextHourLabel = "@ ${priceNextHours[2]}"
                     def pricePlusTwoHour = Math.round(priceNextHours[1] *100)
                     def pricePlusTwoHourLabel = "@ ${priceNextHours[3]}"
-                    def currency = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.currency
-                    def level = resp.data.data.viewer.homes[0].currentSubscription.priceInfo.current.level
-                    def consumptionPrevHour = resp.data.data.viewer.homes[0].consumption.nodes[0].consumption
+                    def currency = resp.data.data.viewer.homes[homeNumber()].currentSubscription.priceInfo.current.currency
+                    def level = resp.data.data.viewer.homes[homeNumber()].currentSubscription.priceInfo.current.level
+                    def consumptionPrevHour = resp.data.data.viewer.homes[homeNumber()].consumption.nodes[0].consumption
+                    def address = resp.data.data.viewer.homes[homeNumber()].address.address1
                     
                     
                     
@@ -169,6 +187,7 @@ def getPrice() {
                     state.priceMinDayLabel = priceMinDayLabel
 
                     sendEvent(name: "consumptionPrevHour", value: consumptionPrevHour, unit: "kWh")
+                    sendEvent(name: "address", value: address)
                     sendEvent(name: "energy", value: price, unit: currency)
                     sendEvent(name: "price", value: state.price, unit: currency)
                     sendEvent(name: "priceNextHour", value: state.priceNextHour, unit: currency)
@@ -187,7 +206,7 @@ def getPrice() {
                     sendEvent(name: "level", value: state.level)
                     
                     
-                    log.debug "$level"
+                    log.debug "$address"
                 }
             }
         } catch (e) {
@@ -228,7 +247,7 @@ def currencyToMinor(String currency){
 }
 
 def graphQLApiQuery(){
-    return '{"query": "{viewer {homes {consumption(resolution: HOURLY, last: 1) {nodes {consumption consumptionUnit}} currentSubscription {priceInfo { current {total currency level} today {total startsAt} tomorrow{ total startsAt }}}}}}", "variables": null, "operationName": null}';
+    return '{"query": "{viewer {homes {address{address1} consumption(resolution: HOURLY, last: 1) {nodes {consumption consumptionUnit}} currentSubscription {priceInfo { current {total currency level} today {total startsAt} tomorrow{ total startsAt }}}}}}", "variables": null, "operationName": null}';
 }
 
 def MaxValueTimestamp(List values){
