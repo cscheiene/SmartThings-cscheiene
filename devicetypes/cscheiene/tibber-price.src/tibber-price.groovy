@@ -53,6 +53,14 @@ metadata {
             description: "https://developer.tibber.com/settings/accesstoken"
         )
 		input (
+            name: "home",
+            type: "number",
+            title: "Home",
+            description: "Enter the home you want to display, default is 0",
+            required: true,
+            displayDuringSetup: true,
+        )
+		input (
             name: "NORMAL",
             type: "paragraph",
             title: "NORMAL",
@@ -86,15 +94,7 @@ metadata {
             name: "VERSION",
             type: "paragraph",
             title: "Version number",
-            description: "110421"
-        )
-        input (
-            name: "home",
-            type: "number",
-            title: "Home",
-            description: "Enter the home you want to display, default is 0",
-            required: true,
-            displayDuringSetup: true,
+            description: "140421"
         )
     }
 }
