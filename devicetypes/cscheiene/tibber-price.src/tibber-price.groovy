@@ -318,8 +318,8 @@ def PriceNextHours(List values){
         def total = it.total        
         int hourNow = startsAt.substring(11,13) as int
         int dayNow = startsAt.substring(8,10) as int
-        int hourOffset = startsAt.substring(20,22) as int
-        def timeZoneOperator = startsAt.substring(19,20)
+        int hourOffset = startsAt.substring(24,26) as int
+        def timeZoneOperator = startsAt.substring(23,24)
         if(timeZoneOperator=="+"){
             hourNowUtc = hourNowUtc + hourOffset
         }
